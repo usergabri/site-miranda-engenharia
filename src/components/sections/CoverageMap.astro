@@ -1,0 +1,308 @@
+---
+import { Icon } from 'astro-icon/components';
+import brazilSvg from '../../assets/brazil.svg?raw';
+import { site } from '../../config/site';
+
+// Extrai os estados do SVG (MapSVG: id="BR-XX", title="Nome", d="...")
+const paths = [...brazilSvg.matchAll(/<path\b[^>]*>/g)].map((m) => {
+  const tag = m[0];
+  const attr = (name: string) => tag.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1] ?? '';
+  return { id: attr('id').replace('BR-', ''), name: attr('title'), d: attr('d') };
+});
+
+const W = Number(brazilSvg.match(/width="([\d.]+)"/)?.[1]);
+const H = Number(brazilSvg.match(/height="([\d.]+)"/)?.[1]);
+const [lonMin, latMax, lonMax, latMin] = brazilSvg.match(/mapsvg:geoViewBox="([^"]+)"/)![1].split(' ').map(Number);
+const project = (lat: number, lon: number) => ({
+  x: ((lon - lonMin) / (lonMax - lonMin)) * W,
+  y: ((latMax - lat) / (latMax - latMin)) * H,
+});
+
+// Ponto de referência de cada estado (capital), usado só para o traçado das linhas
+const anchors: Record<string, [number, number]> = {
+  AC: [-9.97, -67.81], AL: [-9.67, -35.74], AM: [-3.12, -60.02], AP: [0.03, -51.07], BA: [-12.97, -38.5],
+  CE: [-3.73, -38.52], DF: [-15.79, -47.88], ES: [-20.32, -40.34], GO: [-16.68, -49.25], MA: [-2.53, -44.3],
+  MG: [-19.92, -43.94], MS: [-20.44, -54.65], MT: [-15.6, -56.1], PA: [-1.46, -48.49], PB: [-7.12, -34.86],
+  PE: [-8.05, -34.88], PI: [-5.09, -42.8], PR: [-25.43, -49.27], RJ: [-22.91, -43.17], RN: [-5.79, -35.21],
+  RO: [-8.76, -63.9], RR: [2.82, -60.67], RS: [-30.03, -51.23], SC: [-27.6, -48.55], SE: [-10.91, -37.07],
+  SP: [-23.55, -46.63], TO: [-10.18, -48.33],
+};
+
+const served = new Set<string>(site.statesServed);
+const hq = project(site.geo.lat, site.geo.lon);
+
+const routes = site.statesServed
+  .filter((uf) => uf !== site.state && anchors[uf])
+  .map((uf) => {
+    const p = project(...anchors[uf]);
+    const mx = (hq.x + p.x) / 2;
+    const my = (hq.y + p.y) / 2;
+    const dx = p.x - hq.x;
+    const dy = p.y - hq.y;
+    const len = Math.hypot(dx, dy);
+    const bend = len * 0.28;
+    const cx = mx + (-dy / len) * bend;
+    const cy = my + (dx / len) * bend;
+    return { uf, p, d: `M${hq.x.toFixed(1)} ${hq.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${p.x.toFixed(1)} ${p.y.toFixed(1)}` };
+  });
+
+const servedNames = paths.filter((p) => served.has(p.id)).sort((a, b) => site.statesServed.indexOf(a.id as never) - site.statesServed.indexOf(b.id as never));
+---
+
+<section class="coverage section dark" aria-labelledby="coverage-title">
+  <div class="container coverage__grid">
+    <div class="coverage__content">
+      <span class="eyebrow" data-reveal><b>/06</b> Área de atuação</span>
+      <h2 class="h2" id="coverage-title" data-split>
+        Base no Paraná. <span class="accent">Atendimento em todo o Brasil.</span>
+      </h2>
+      <p class="lead" data-reveal>
+        A sede fica em {site.city} – {site.state}, e a equipe se desloca até a sua planta onde ela estiver. Projetos já
+        executados em {served.size} estados e mais de 10 cidades.
+      </p>
+
+      <ul class="coverage__states" data-reveal>
+        {
+          servedNames.map((s) => (
+            <li>
+              <span class="mono">{s.id}</span>
+              {s.name}
+              {s.id === site.state && <em>Sede</em>}
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="coverage__hq mono" data-reveal>
+        <Icon name="lucide:map-pin" />
+        {site.city} – {site.state} · {site.geo.lat.toFixed(2)}°, {site.geo.lon.toFixed(2)}°
+      </p>
+    </div>
+
+    <figure class="coverage__map" data-reveal>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="map-title" data-map>
+        <title id="map-title">Mapa do Brasil com os estados atendidos destacados: {servedNames.map((s) => s.name).join(', ')}</title>
+        <defs>
+          <radialGradient id="hq-glow">
+            <stop offset="0%" stop-color="#00B8D9" stop-opacity="0.55"></stop>
+            <stop offset="100%" stop-color="#00B8D9" stop-opacity="0"></stop>
+          </radialGradient>
+        </defs>
+        <g class="map__states">
+          {
+            paths.map((p) => (
+              <path
+                d={p.d}
+                class:list={['map__state', { 'is-served': served.has(p.id), 'is-hq': p.id === site.state }]}
+                data-uf={p.id}>
+                <title>{p.name}</title>
+              </path>
+            ))
+          }
+        </g>
+        <g class="map__routes" aria-hidden="true">
+          {routes.map((r) => <path d={r.d} class="map__route" pathLength="1" data-route />)}
+        </g>
+        <g aria-hidden="true">
+          {
+            routes.map((r) => (
+              <g class="map__node" transform={`translate(${r.p.x.toFixed(1)} ${r.p.y.toFixed(1)})`}>
+                <circle r="4.5" />
+                <text y="-10">{r.uf}</text>
+              </g>
+            ))
+          }
+        </g>
+        <g class="map__hq" transform={`translate(${hq.x.toFixed(1)} ${hq.y.toFixed(1)})`} aria-hidden="true">
+          <circle r="34" fill="url(#hq-glow)"></circle>
+          <circle r="7" class="map__hq-ring"></circle>
+          <circle r="5.5" class="map__hq-dot"></circle>
+        </g>
+      </svg>
+      <figcaption class="coverage__legend">
+        <span><i class="lg lg--served"></i>Estados atendidos</span>
+        <span><i class="lg lg--hq"></i>Sede</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .coverage {
+    background: var(--ink-900);
+    overflow: hidden;
+  }
+  .coverage__grid {
+    display: grid;
+    gap: clamp(40px, 6vw, 72px);
+    align-items: center;
+  }
+  @media (min-width: 1000px) {
+    .coverage__grid {
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+  }
+  .coverage__content {
+    display: grid;
+    gap: 26px;
+    justify-items: start;
+  }
+  .coverage__states {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .coverage__states li {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px 8px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line-dark);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.9rem;
+  }
+  .coverage__states .mono {
+    display: grid;
+    place-items: center;
+    min-width: 32px;
+    height: 26px;
+    padding-inline: 6px;
+    border-radius: 999px;
+    background: rgba(0, 184, 217, 0.14);
+    color: var(--cyan-500);
+    font-size: 0.72rem;
+    font-weight: 500;
+  }
+  .coverage__states em {
+    font-style: normal;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--cyan-500);
+    color: var(--ink-950);
+  }
+  .coverage__hq {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--muted-on-dark);
+  }
+  .coverage__hq :global(svg) {
+    width: 16px;
+    height: 16px;
+    color: var(--cyan-500);
+  }
+
+  .coverage__map {
+    position: relative;
+    max-width: 640px;
+    width: 100%;
+    justify-self: center;
+  }
+  .coverage__map svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .map__state {
+    fill: var(--ink-800);
+    stroke: rgba(140, 214, 230, 0.22);
+    stroke-width: 0.8;
+    stroke-linejoin: round;
+    transition: fill 0.35s var(--ease-out);
+  }
+  .map__state:hover {
+    fill: #1b414c;
+  }
+  .map__state.is-served {
+    fill: rgba(0, 184, 217, 0.5);
+    stroke: rgba(51, 201, 227, 0.9);
+  }
+  .map__state.is-served:hover {
+    fill: rgba(0, 184, 217, 0.68);
+  }
+  .map__state.is-hq {
+    fill: rgba(0, 184, 217, 0.82);
+  }
+  .map__route {
+    fill: none;
+    stroke: #eaf6f8;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 0.012 0.012;
+    opacity: 0.85;
+  }
+  .map__node circle {
+    fill: var(--ink-950);
+    stroke: #eaf6f8;
+    stroke-width: 2;
+  }
+  .map__node text {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    fill: #eaf6f8;
+    text-anchor: middle;
+    paint-order: stroke;
+    stroke: var(--ink-950);
+    stroke-width: 3px;
+  }
+  .map__hq-dot {
+    fill: #fff;
+    stroke: var(--ink-950);
+    stroke-width: 2.5;
+  }
+  .map__hq-ring {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: hq-ping 2.4s var(--ease-out) infinite;
+  }
+  @keyframes hq-ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    100% {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+  .coverage__legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: var(--muted-on-dark);
+  }
+  .coverage__legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lg {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+  .lg--served {
+    background: rgba(0, 184, 217, 0.6);
+    border: 1px solid var(--cyan-400);
+  }
+  .lg--hq {
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid var(--ink-950);
+    box-shadow: 0 0 0 1px #fff;
+  }
+</style>

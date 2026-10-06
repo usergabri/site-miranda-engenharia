@@ -1,0 +1,128 @@
+---
+import { process } from '../../data/content';
+---
+
+<section class="process section" aria-labelledby="process-title">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="process__titles">
+        <span class="eyebrow" data-reveal><b>/04</b> Como trabalhamos</span>
+        <h2 class="h2" id="process-title" data-split>
+          Cinco etapas, <span class="accent">nenhuma pendência</span> esquecida.
+        </h2>
+      </div>
+      <p class="lead" data-reveal>
+        Um processo claro do primeiro contato à regularização. Você sabe o que está sendo feito, o que falta e quando cada
+        etapa termina.
+      </p>
+    </div>
+
+    <ol class="steps" data-steps>
+      <span class="steps__rail" aria-hidden="true"><span class="steps__fill" data-steps-fill></span></span>
+      {
+        process.map((p, i) => (
+          <li class="step" data-reveal style={`--d:${i}`}>
+            <span class="step__n mono">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="h3">{p.title}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process {
+    background: var(--surface);
+  }
+  .process__titles {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .steps {
+    position: relative;
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .steps__rail {
+    display: none;
+  }
+  .step {
+    position: relative;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 26px 24px 28px;
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .step p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    text-wrap: pretty;
+  }
+  .step__n {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ink-950);
+    color: var(--cyan-500);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 6px var(--surface);
+  }
+  .step:last-child .step__n {
+    background: var(--cyan-500);
+    color: var(--ink-950);
+  }
+  @media (min-width: 1080px) {
+    .steps {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      padding-top: 0;
+    }
+    .steps__rail {
+      display: block;
+      position: absolute;
+      left: 46px;
+      right: 46px;
+      top: 48px;
+      height: 2px;
+      background: var(--line);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .steps__fill {
+      display: block;
+      height: 100%;
+      background: var(--cyan-500);
+      transform-origin: left;
+      transform: scaleX(1);
+    }
+    .js .steps__fill {
+      transform: scaleX(0);
+    }
+    .step {
+      background: transparent;
+      padding: 26px 20px 8px 24px;
+    }
+    .step__n {
+      position: relative;
+      z-index: 2;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .steps__fill {
+      transform: scaleX(1);
+    }
+  }
+</style>

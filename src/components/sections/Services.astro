@@ -1,0 +1,179 @@
+---
+import { Icon } from 'astro-icon/components';
+import { services } from '../../data/content';
+import { serviceMessage, whatsappLink } from '../../config/site';
+---
+
+<section class="services section" id="servicos" aria-labelledby="services-title">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="services__titles">
+        <span class="eyebrow" data-reveal><b>/02</b> Serviços complementares</span>
+        <h2 class="h2" id="services-title" data-split>
+          Engenharia mecânica completa para manter sua operação <span class="accent">regular e</span> <span class="nowrap"><span class="accent">segura</span>.</span>
+        </h2>
+      </div>
+      <p class="lead" data-reveal>
+        Além da NR-13, atendemos as principais exigências técnicas e legais de indústrias, empresas e prestadores de
+        serviço, sempre com ART e documentação completa.
+      </p>
+    </div>
+
+    <ul class="services__grid">
+      {
+        services.map((s, i) => (
+          <li class="card" data-reveal style={`--d:${i % 3}`}>
+            <div class="card__top">
+              <span class="card__icon">
+                <Icon name={s.icon} />
+              </span>
+              <span class="card__n mono">{String(i + 1).padStart(2, '0')}</span>
+            </div>
+            <h3 class="h3">{s.title}</h3>
+            <p class="card__text">{s.text}</p>
+            <a class="link-arrow card__link" href={whatsappLink(serviceMessage(s.title))} target="_blank" rel="noopener">
+              Solicitar orçamento <Icon name="lucide:arrow-up-right" />
+              <span class="sr-only"> de {s.title}</span>
+            </a>
+          </li>
+        ))
+      }
+      <li class="card card--cta" data-reveal>
+        <p class="card--cta__title">Não encontrou o que precisa?</p>
+        <p class="card--cta__text">
+          Conte qual é o equipamento ou a exigência. Indicamos o caminho técnico e legal para resolver.
+        </p>
+        <a class="btn btn--dark" href={whatsappLink()} target="_blank" rel="noopener">
+          Falar com o engenheiro
+          <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .services {
+    background: var(--surface);
+  }
+  .services__titles {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .services__grid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 680px) {
+    .services__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .services__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: clamp(22px, 2.4vw, 30px);
+    border-radius: var(--radius);
+    background: var(--paper);
+    border: 1px solid transparent;
+    transition:
+      background 0.4s var(--ease-out),
+      border-color 0.4s var(--ease-out),
+      box-shadow 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+  .card:hover {
+    background: var(--surface);
+    border-color: var(--line);
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-4px);
+  }
+  .card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+  .card__icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+    background: var(--surface);
+    color: var(--cyan-600);
+    border: 1px solid var(--line);
+    transition:
+      background 0.4s var(--ease-out),
+      color 0.4s var(--ease-out),
+      border-color 0.4s var(--ease-out);
+  }
+  .card:hover .card__icon {
+    background: var(--cyan-500);
+    border-color: var(--cyan-500);
+    color: var(--ink-950);
+  }
+  .card__icon :global(svg) {
+    width: 26px;
+    height: 26px;
+  }
+  .card__n {
+    font-size: 0.75rem;
+    color: #a9b7ba;
+  }
+  .card__text {
+    color: var(--muted);
+    font-size: 0.95rem;
+    text-wrap: pretty;
+  }
+  .card__link {
+    margin-top: auto;
+    padding-top: 14px;
+  }
+
+  .card--cta {
+    justify-content: center;
+    gap: 14px;
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgba(0, 184, 217, 0.35), transparent 60%),
+      var(--cyan-50);
+    border-color: var(--cyan-100);
+  }
+  .card--cta:hover {
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgba(0, 184, 217, 0.45), transparent 60%),
+      var(--cyan-50);
+    border-color: var(--cyan-300);
+  }
+  .card--cta .btn {
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+  .card--cta__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  .card--cta__text {
+    color: var(--muted);
+    max-width: 44ch;
+  }
+  @media (min-width: 680px) {
+    .card--cta {
+      grid-column: span 2;
+    }
+  }
+</style>

@@ -1,0 +1,150 @@
+---
+import { Image } from 'astro:assets';
+import { cases } from '../../data/content';
+import valve from '../../assets/img/matheus-valvula-seguranca.jpeg';
+---
+
+<section class="cases section dark" id="cases" aria-labelledby="cases-title">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="cases__titles">
+        <span class="eyebrow" data-reveal><b>/05</b> Cases</span>
+        <h2 class="h2" id="cases-title" data-split>
+          Da pequena planta ao projeto de <span class="accent">450 vasos de</span> <span class="nowrap"><span class="accent">pressão</span>.</span>
+        </h2>
+      </div>
+      <p class="lead" data-reveal>
+        Projetos reais, executados com planejamento, cronograma cumprido e documentação entregue completa.
+      </p>
+    </div>
+
+    <div class="cases__layout">
+      <figure class="cases__media" data-reveal>
+        <Image
+          src={valve}
+          alt="Matheus Miranda inspecionando válvula de segurança de uma caldeira em planta industrial"
+          widths={[480, 800, 1100]}
+          sizes="(min-width: 1000px) 45vw, 100vw"
+          data-parallax
+        />
+      </figure>
+
+      <ul class="cases__list">
+        {
+          cases.map((c, i) => (
+            <li class="case" data-reveal style={`--d:${i}`}>
+              <div class="case__metric">
+                <span class="case__number display">{c.number}</span>
+                <span class="case__unit mono">{c.unit}</span>
+              </div>
+              <div class="case__body">
+                <h3 class="h3">{c.title}</h3>
+                <p class="case__place mono">{c.place}</p>
+                <p class="case__text">{c.text}</p>
+                {c.via && <p class="case__via">{c.via}</p>}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cases {
+    border-top: 1px solid var(--line-dark);
+  }
+  .cases__titles {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .cases__layout {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 1000px) {
+    .cases__layout {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 24px;
+    }
+  }
+  .cases__media {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--ink-850);
+  }
+  @media (min-width: 1000px) {
+    .cases__media {
+      aspect-ratio: auto;
+      min-height: 420px;
+    }
+  }
+  .cases__media :global(img) {
+    width: 100%;
+    height: 115%;
+    object-fit: cover;
+    object-position: 65% 50%;
+  }
+  .cases__list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .case {
+    display: grid;
+    gap: 20px;
+    padding: clamp(22px, 2.6vw, 32px);
+    border-radius: var(--radius);
+    border: 1px solid var(--line-dark);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    transition: border-color 0.4s var(--ease-out);
+  }
+  .case:hover {
+    border-color: rgba(0, 184, 217, 0.45);
+  }
+  @media (min-width: 640px) {
+    .case {
+      grid-template-columns: 190px 1fr;
+      gap: 28px;
+    }
+  }
+  .case__metric {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+  }
+  .case__number {
+    font-size: clamp(2.8rem, 5vw, 3.8rem);
+    color: var(--cyan-500);
+    white-space: nowrap;
+  }
+  .case__unit {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-on-dark);
+  }
+  .case__body {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+  }
+  .case__place {
+    font-size: 0.78rem;
+    color: var(--cyan-300);
+  }
+  .case__text {
+    color: var(--muted-on-dark);
+    font-size: 0.95rem;
+    margin-top: 6px;
+  }
+  .case__via {
+    font-size: 0.82rem;
+    color: #6f8a91;
+    font-style: italic;
+  }
+</style>

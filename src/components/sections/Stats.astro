@@ -1,0 +1,99 @@
+---
+import { stats } from '../../data/content';
+---
+
+<section class="stats section" aria-labelledby="stats-title">
+  <div class="container">
+    <div class="stats__head">
+      <span class="eyebrow" data-reveal><b>/00</b> Números</span>
+      <h2 class="h2" id="stats-title" data-split>
+        Resultados que se medem <span class="accent">em</span> <span class="nowrap"><span class="accent">campo</span>,</span> não em promessas.
+      </h2>
+    </div>
+
+    <dl class="stats__grid">
+      {
+        stats.map((s, i) => (
+          <div class="stat" data-reveal style={`--d:${i}`}>
+            <dt class="stat__label">{s.label}</dt>
+            <dd class="stat__value display">
+              <span class="stat__affix">{s.prefix}</span>
+              <span data-count={s.value}>{s.value.toLocaleString('pt-BR')}</span>
+              <span class="stat__affix">{s.suffix}</span>
+            </dd>
+            <span class="stat__index mono" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .stats {
+    background: var(--paper);
+  }
+  .stats__head {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+    margin-bottom: clamp(48px, 6vw, 72px);
+    max-width: 880px;
+  }
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  @media (min-width: 760px) {
+    .stats__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 1180px) {
+    .stats__grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+  .stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    padding: clamp(20px, 2.4vw, 32px) clamp(16px, 2vw, 24px);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    min-height: 180px;
+    background: var(--surface);
+    transition: background 0.4s var(--ease-out);
+  }
+  .stat:hover {
+    background: var(--cyan-50);
+  }
+  .stat__value {
+    font-size: clamp(2.6rem, 5vw, 3.6rem);
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    order: -1;
+    display: flex;
+    align-items: baseline;
+  }
+  .stat__affix {
+    color: var(--cyan-600);
+  }
+  .stat__label {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .stat__index {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 0.7rem;
+    color: #a9b7ba;
+  }
+</style>

@@ -1,0 +1,115 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '../styles/global.css';
+import { site } from '../config/site';
+import { faq } from '../data/content';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Miranda Engenharia | Especialista em NR-13, Laudos e ART',
+  description = 'Engenharia mecânica especializada em NR-13: inspeção de caldeiras, vasos de pressão e tubulações, laudos técnicos, NR-11, NR-12, PMOC e emissão de ART. Nova Esperança – PR, atendimento em todo o Brasil.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL('/og.jpg', site.url).href;
+
+const sameAs = [site.instagram].filter(Boolean);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    '@id': `${site.url}/#empresa`,
+    name: site.name,
+    url: site.url,
+    image: ogImage,
+    logo: new URL('/favicon.svg', site.url).href,
+    description,
+    telephone: `+${site.whatsapp.number}`,
+    ...(site.email && { email: site.email }),
+    ...(site.cnpj && { taxID: site.cnpj }),
+    ...(sameAs.length && { sameAs }),
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.city,
+      addressRegion: site.state,
+      addressCountry: 'BR',
+    },
+    geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lon },
+    areaServed: { '@type': 'Country', name: 'Brasil' },
+    founder: {
+      '@type': 'Person',
+      name: site.engineer,
+      jobTitle: site.title,
+      hasCredential: `CREA ${site.crea}`,
+    },
+    knowsAbout: ['NR-13', 'NR-12', 'NR-11', 'PMOC', 'ART', 'Laudos técnicos mecânicos', 'Vasos de pressão', 'Caldeiras'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#051216" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    {
+      site.gaId && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`} />
+          <script is:inline define:vars={{ gaId: site.gaId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', gaId);
+          </script>
+        </>
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <slot />
+  </body>
+</html>

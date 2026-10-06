@@ -1,0 +1,403 @@
+/* ============================================================
+   Miranda Engenharia — Design system
+   Cor-base: ciano do logo #00B8D9
+   ============================================================ */
+
+:root {
+  /* Marca */
+  --cyan-50: #e6f8fb;
+  --cyan-100: #c4eff6;
+  --cyan-300: #5fd6ea;
+  --cyan-400: #33c9e3;
+  --cyan-500: #00b8d9;
+  --cyan-600: #0093ae;
+  --cyan-700: #007489;
+
+  /* Escuros (azul-petróleo) */
+  --ink-950: #051216;
+  --ink-900: #0a1c22;
+  --ink-850: #0e252c;
+  --ink-800: #133039;
+  --line-dark: rgba(140, 214, 230, 0.14);
+  --text-on-dark: #eaf6f8;
+  --muted-on-dark: #8fa9b0;
+
+  /* Claros */
+  --paper: #f1f5f6;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --muted: #56676c;
+  --line: #d9e2e4;
+
+  /* Tipografia */
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Layout */
+  --container: 1280px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --radius-sm: 10px;
+  --radius: 18px;
+  --radius-lg: 28px;
+  --section-y: clamp(80px, 11vw, 160px);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-card: 0 1px 2px rgba(5, 18, 22, 0.04), 0 8px 24px -12px rgba(5, 18, 22, 0.12);
+  --shadow-lift: 0 2px 4px rgba(5, 18, 22, 0.05), 0 24px 48px -20px rgba(5, 18, 22, 0.28);
+
+  color-scheme: light;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 88px;
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+body {
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+img,
+video {
+  height: auto;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+::selection {
+  background: var(--cyan-500);
+  color: var(--ink-950);
+}
+:focus-visible {
+  outline: 2px solid var(--cyan-500);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Utilitários ---------- */
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section {
+  padding-block: var(--section-y);
+  position: relative;
+}
+.dark {
+  background: var(--ink-950);
+  color: var(--text-on-dark);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  background: var(--cyan-500);
+  color: var(--ink-950);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  transform: translateY(-150%);
+  transition: transform 0.2s;
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- Tipografia ---------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+}
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.1rem, 4.6vw, 3.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+.dark .lead {
+  color: var(--muted-on-dark);
+}
+.accent {
+  color: var(--cyan-600);
+}
+.dark .accent {
+  color: var(--cyan-500);
+}
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'zero' 0;
+}
+
+/* Mantém a pontuação colada à última palavra destacada */
+.nowrap {
+  white-space: nowrap;
+}
+
+/* Rótulo de seção em pílula mono */
+.eyebrow {
+  display: inline-flex;
+  justify-self: start;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 7px 14px 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.eyebrow::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan-500);
+  box-shadow: 0 0 0 4px rgba(0, 184, 217, 0.18);
+}
+.eyebrow b {
+  color: var(--cyan-600);
+  font-weight: 600;
+}
+.dark .eyebrow {
+  color: var(--muted-on-dark);
+  border-color: var(--line-dark);
+  background: rgba(255, 255, 255, 0.03);
+}
+.dark .eyebrow b {
+  color: var(--cyan-500);
+}
+
+.section-head {
+  display: grid;
+  gap: 24px;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+.section-head--split {
+  grid-template-columns: 1fr;
+  align-items: end;
+}
+@media (min-width: 900px) {
+  .section-head--split {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+  }
+}
+
+/* ---------- Botões ---------- */
+.btn {
+  --btn-bg: var(--cyan-500);
+  --btn-fg: var(--ink-950);
+  --btn-dot: var(--ink-950);
+  --btn-dot-fg: var(--cyan-500);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 7px 7px 24px;
+  min-height: 52px;
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: -0.005em;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background 0.3s var(--ease-out),
+    color 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out);
+  white-space: nowrap;
+}
+.btn__dot {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--btn-dot);
+  color: var(--btn-dot-fg);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.btn__dot svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.45s var(--ease-out);
+}
+.btn:hover .btn__dot svg {
+  transform: rotate(45deg);
+}
+.btn:hover {
+  --btn-bg: var(--cyan-400);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: currentColor;
+  --btn-dot: rgba(255, 255, 255, 0.1);
+  --btn-dot-fg: currentColor;
+  border-color: currentColor;
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+}
+.btn--ghost:hover {
+  --btn-bg: rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in srgb, currentColor 60%, transparent);
+}
+.btn--dark {
+  --btn-bg: var(--ink-950);
+  --btn-fg: #fff;
+  --btn-dot: var(--cyan-500);
+  --btn-dot-fg: var(--ink-950);
+}
+.btn--dark:hover {
+  --btn-bg: var(--ink-800);
+}
+.btn--sm {
+  min-height: 44px;
+  padding: 5px 5px 5px 18px;
+  font-size: 0.875rem;
+  gap: 10px;
+}
+.btn--sm .btn__dot {
+  width: 34px;
+  height: 34px;
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--cyan-700);
+}
+.link-arrow svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.35s var(--ease-out);
+}
+.link-arrow:hover svg {
+  transform: translate(3px, -3px);
+}
+
+/* ---------- Grid técnico decorativo ---------- */
+.tech-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--line-dark) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-dark) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%);
+  opacity: 0.6;
+}
+
+/* ---------- Animações (estado inicial só quando JS ativo) ---------- */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.js [data-split] {
+  visibility: hidden;
+}
+.split-line {
+  overflow: clip;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  .js [data-split] {
+    visibility: visible;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

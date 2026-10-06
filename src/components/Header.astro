@@ -1,0 +1,270 @@
+---
+import { Icon } from 'astro-icon/components';
+import Logo from './Logo.astro';
+import { whatsappLink } from '../config/site';
+
+const nav = [
+  { href: '#nr13', label: 'NR-13' },
+  { href: '#servicos', label: 'Serviços' },
+  { href: '#sobre', label: 'Sobre' },
+  { href: '#cases', label: 'Cases' },
+  { href: '#depoimentos', label: 'Depoimentos' },
+  { href: '#contato', label: 'Contato' },
+];
+---
+
+<header class="header" data-header>
+  <div class="header__inner container">
+    <a href="#inicio" class="header__logo" aria-label="Miranda Engenharia — início">
+      <Logo variant="dark" />
+    </a>
+
+    <nav class="header__nav" aria-label="Principal">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="btn btn--sm header__cta" href={whatsappLink()} target="_blank" rel="noopener">
+      Solicitar orçamento
+      <span class="btn__dot"><Icon name="lucide:arrow-up-right" /></span>
+    </a>
+
+    <button class="header__toggle" type="button" aria-expanded="false" aria-controls="menu-mobile" data-menu-toggle>
+      <span class="sr-only">Abrir menu</span>
+      <span class="header__bars" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+
+  <div class="menu" id="menu-mobile" data-menu hidden data-lenis-prevent>
+    <nav aria-label="Menu mobile" class="container">
+      <ul>
+        {
+          nav.map((item, i) => (
+            <li style={`--i:${i}`}>
+              <a href={item.href} data-menu-link>
+                <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn" href={whatsappLink()} target="_blank" rel="noopener">
+        Solicitar orçamento
+        <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    padding-block: 14px;
+    color: var(--text-on-dark);
+    transition:
+      background 0.4s var(--ease-out),
+      padding 0.4s var(--ease-out),
+      border-color 0.4s var(--ease-out);
+    border-bottom: 1px solid transparent;
+  }
+  .header.is-scrolled {
+    background: rgba(5, 18, 22, 0.82);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom-color: var(--line-dark);
+    padding-block: 10px;
+  }
+  /* backdrop-filter cria containing block e quebraria o menu fixo */
+  .header.menu-open {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .header__inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .header__logo {
+    width: clamp(171px, 18.2vw, 214px);
+    flex-shrink: 0;
+    margin-right: auto;
+    position: relative;
+    z-index: 2;
+  }
+  .header__nav {
+    display: none;
+  }
+  .header__nav ul {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    padding: 5px;
+    border: 1px solid var(--line-dark);
+    border-radius: 999px;
+    background: rgba(5, 18, 22, 0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .header__nav a {
+    display: block;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 999px;
+    color: var(--muted-on-dark);
+    transition:
+      color 0.25s,
+      background 0.25s;
+  }
+  .header__nav a:hover,
+  .header__nav a[aria-current='true'] {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .header__cta {
+    display: none;
+  }
+  .header__toggle {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--line-dark);
+    background: rgba(5, 18, 22, 0.4);
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+  .header__bars {
+    display: grid;
+    gap: 6px;
+    width: 18px;
+  }
+  .header__bars i {
+    display: block;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .header__toggle[aria-expanded='true'] .header__bars i:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .header__toggle[aria-expanded='true'] .header__bars i:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  @media (min-width: 1080px) {
+    .header__nav,
+    .header__cta {
+      display: block;
+    }
+    .header__cta {
+      display: inline-flex;
+    }
+    .header__toggle {
+      display: none;
+    }
+  }
+
+  /* Menu mobile */
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: var(--ink-950);
+    padding-top: 96px;
+    overflow-y: auto;
+  }
+  .menu:not([hidden]) {
+    animation: menu-in 0.4s var(--ease-out);
+  }
+  .menu ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 40px;
+    border-top: 1px solid var(--line-dark);
+  }
+  .menu li {
+    border-bottom: 1px solid var(--line-dark);
+    animation: menu-item 0.5s var(--ease-out) both;
+    animation-delay: calc(var(--i) * 40ms + 80ms);
+  }
+  .menu li a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 18px 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+  .menu li .mono {
+    font-size: 0.75rem;
+    color: var(--cyan-500);
+    letter-spacing: 0;
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes menu-item {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = header.querySelector<HTMLElement>('[data-menu]')!;
+
+  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 40);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const setOpen = (open: boolean) => {
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.sr-only')!.textContent = open ? 'Fechar menu' : 'Abrir menu';
+    menu.hidden = !open;
+    header.classList.toggle("menu-open", open);
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    window.dispatchEvent(new CustomEvent(open ? 'menu:open' : 'menu:close'));
+  };
+  toggle.addEventListener('click', () => setOpen(menu.hidden));
+  menu.querySelectorAll('[data-menu-link]').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menu.hidden) setOpen(false);
+  });
+
+  // Destaca o item da seção visível
+  const links = [...header.querySelectorAll<HTMLAnchorElement>('.header__nav a')];
+  const sections = links
+    .map((a) => document.querySelector<HTMLElement>(a.getAttribute('href')!))
+    .filter((s): s is HTMLElement => !!s);
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        links.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('href') === `#${entry.target.id}`)));
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  sections.forEach((s) => io.observe(s));
+</script>

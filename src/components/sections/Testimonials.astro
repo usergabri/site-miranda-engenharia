@@ -1,0 +1,257 @@
+---
+import { Icon } from 'astro-icon/components';
+import { testimonials } from '../../data/content';
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .filter((_, i, a) => i === 0 || i === a.length - 1)
+    .map((n) => n[0])
+    .join('');
+---
+
+<section class="testimonials section" id="depoimentos" aria-labelledby="testimonials-title">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="testimonials__titles">
+        <span class="eyebrow" data-reveal><b>/07</b> Depoimentos</span>
+        <h2 class="h2" id="testimonials-title" data-split>
+          Quem contratou <span class="nowrap"><span class="accent">recomenda</span>.</span>
+        </h2>
+      </div>
+      <p class="lead" data-reveal>
+        Gestores e proprietários de indústrias contam como foi trabalhar com a Miranda Engenharia, da execução à entrega
+        dos documentos.
+      </p>
+    </div>
+
+    <ul class="testimonials__grid">
+      {
+        testimonials.map((t, i) => (
+          <li class="tcard" data-reveal style={`--d:${i}`}>
+            <Icon name="lucide:quote" class="tcard__mark" aria-hidden="true" />
+            <blockquote class="tcard__quote">
+              <p>“{t.quote}”</p>
+            </blockquote>
+            <div class="tcard__footer">
+              <div class="person">
+                <span class="person__avatar" aria-hidden="true">
+                  {initials(t.name)}
+                </span>
+                <div>
+                  <p class="person__name">{t.name}</p>
+                  <p class="person__role">
+                    {t.role} · {t.company}
+                  </p>
+                  <p class="person__place mono">{t.place}</p>
+                </div>
+              </div>
+              <button class="tcard__more link-arrow" type="button" data-dialog-open={`dep-${i}`}>
+                Ler depoimento completo <Icon name="lucide:arrow-up-right" />
+              </button>
+            </div>
+
+            <dialog class="tdialog" id={`dep-${i}`} aria-labelledby={`dep-${i}-title`} data-lenis-prevent>
+              <div class="tdialog__inner">
+                <button class="tdialog__close" type="button" data-dialog-close aria-label="Fechar depoimento">
+                  <Icon name="lucide:x" />
+                </button>
+                <div class="person">
+                  <span class="person__avatar" aria-hidden="true">
+                    {initials(t.name)}
+                  </span>
+                  <div>
+                    <p class="person__name" id={`dep-${i}-title`}>
+                      {t.name}
+                    </p>
+                    <p class="person__role">
+                      {t.role} · {t.company}
+                    </p>
+                    <p class="person__place mono">{t.place}</p>
+                  </div>
+                </div>
+                <blockquote class="tdialog__text">
+                  {t.full.map((p) => <p>{p}</p>)}
+                </blockquote>
+              </div>
+            </dialog>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .testimonials {
+    background: var(--paper);
+  }
+  .testimonials__titles {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .testimonials__grid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 1000px) {
+    .testimonials__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .tcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: clamp(24px, 2.8vw, 36px);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    transition:
+      box-shadow 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+  .tcard:hover {
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-4px);
+  }
+  .tcard :global(.tcard__mark) {
+    width: 40px;
+    height: 40px;
+    color: var(--cyan-500);
+  }
+  .tcard__quote p {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.6vw, 1.42rem);
+    line-height: 1.32;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+    text-wrap: pretty;
+  }
+  .tcard__footer {
+    margin-top: auto;
+    display: grid;
+    gap: 20px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .tcard__more {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    justify-self: start;
+  }
+  .person {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .person__avatar {
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--ink-950);
+    color: var(--cyan-500);
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .person__name {
+    font-weight: 600;
+  }
+  .person__role {
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .person__place {
+    font-size: 0.72rem;
+    color: var(--cyan-700);
+    margin-top: 2px;
+  }
+
+  .tdialog {
+    width: min(720px, calc(100vw - 32px));
+    max-height: min(86vh, 860px);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 40px 80px -20px rgba(5, 18, 22, 0.5);
+  }
+  .tdialog::backdrop {
+    background: rgba(5, 18, 22, 0.7);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .tdialog[open] {
+    animation: dialog-in 0.45s var(--ease-out);
+  }
+  .tdialog__inner {
+    position: relative;
+    padding: clamp(24px, 4vw, 48px);
+    display: grid;
+    gap: 28px;
+  }
+  .tdialog__inner .person {
+    padding-right: 52px;
+  }
+  .tdialog__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    cursor: pointer;
+  }
+  .tdialog__close :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+  .tdialog__text {
+    display: grid;
+    gap: 16px;
+    color: #33454a;
+    font-size: 1.02rem;
+    line-height: 1.7;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.98);
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-dialog-open]').forEach((btn) => {
+    const dialog = document.getElementById(btn.dataset.dialogOpen!) as HTMLDialogElement | null;
+    if (!dialog) return;
+    btn.addEventListener('click', () => {
+      dialog.showModal();
+      window.dispatchEvent(new CustomEvent('menu:open'));
+    });
+    dialog.addEventListener('close', () => window.dispatchEvent(new CustomEvent('menu:close')));
+    dialog.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
+    // Fecha ao clicar fora do conteúdo
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  });
+</script>

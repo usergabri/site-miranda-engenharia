@@ -1,0 +1,39 @@
+---
+import dark from '../assets/logo-escuro.svg?raw';
+import light from '../assets/logo-claro.svg?raw';
+
+interface Props {
+  variant?: 'dark' | 'light';
+  class?: string;
+}
+const { variant = 'dark', class: className } = Astro.props;
+// Amplia só o texto "MIRANDA ENGENHARIA" (ancorado à esquerda, centrado na altura do símbolo)
+// e alarga o viewBox para caber. O símbolo "M" mantém o tamanho original.
+const TEXT_SCALE = 1.35;
+const anchor = { x: 561, y: 221 };
+const textRight = anchor.x + (870 - anchor.x) * TEXT_SCALE;
+const viewBox = `82 74 ${Math.ceil(textRight + 6 - 82)} 261`;
+const svg = (variant === 'dark' ? dark : light)
+  .replace('<svg ', '<svg aria-hidden="true" focusable="false" ')
+  .replace(/viewBox="[^"]*"/, `viewBox="${viewBox}"`)
+  .replace(
+    /(<path fill="#(?:FFFFFF|1A1A1A)"[^>]*\/>)/,
+    `<g transform="translate(${anchor.x} ${anchor.y}) scale(${TEXT_SCALE}) translate(${-anchor.x} ${-anchor.y})">$1</g>`,
+  );
+---
+
+<span class:list={['logo', className]} set:html={svg} />
+
+<style>
+  .logo {
+    display: block;
+    line-height: 0;
+  }
+  .logo :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+  .logo :global(title) {
+    display: none;
+  }
+</style>

@@ -1,0 +1,216 @@
+---
+import { Icon } from 'astro-icon/components';
+import { getImage } from 'astro:assets';
+import { site, whatsappLink } from '../../config/site';
+import poster from '../../assets/img/calibracao-psv.jpeg';
+
+const posterImg = await getImage({ src: poster, width: 1280, format: 'webp' });
+---
+
+<section class="hero dark" id="inicio" aria-labelledby="hero-title">
+  <div class="hero__frame" data-hero-frame>
+    <video
+      class="hero__video"
+      src="/videos/hero.mp4"
+      poster={posterImg.src}
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+      data-hero-video></video>
+    <div class="hero__shade" aria-hidden="true"></div>
+    <div class="tech-grid hero__grid" aria-hidden="true"></div>
+
+    <div class="hero__content container">
+      <p class="hero__badge" data-reveal>
+        <span class="hero__badge-dot" aria-hidden="true"></span>
+        <span>Especialista em <b>NR-13</b></span>
+        <span class="hero__badge-sep" aria-hidden="true"></span>
+        <span class="mono">CREA {site.crea}</span>
+      </p>
+
+      <h1 class="hero__title display" id="hero-title">
+        <span class="hero__line"><span data-hero-word>Inspecionar.</span></span>
+        <span class="hero__line"><span data-hero-word>Documentar.</span></span>
+        <span class="hero__line"><span data-hero-word class="accent">Regularizar.</span></span>
+      </h1>
+
+      <div class="hero__bottom">
+        <p class="hero__sub" data-reveal>
+          Engenharia mecânica especializada em caldeiras, vasos de pressão e tubulações. Laudos, ART e acompanhamento
+          técnico, do chão de fábrica ao documento final, em todo o Brasil.
+        </p>
+        <div class="hero__actions" data-reveal>
+          <a class="btn" href={whatsappLink()} target="_blank" rel="noopener">
+            Solicitar orçamento
+            <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
+          </a>
+          <a class="btn btn--ghost" href="#servicos">
+            Ver serviços
+            <span class="btn__dot"><Icon name="lucide:arrow-down" /></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__meta container" aria-hidden="true">
+      <span class="mono">{site.city} – {site.state}</span>
+      <span class="hero__meta-line"></span>
+      <span class="mono">Atendimento em todo o Brasil</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background: var(--ink-950);
+    padding: 0;
+  }
+  .hero__frame {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    color: var(--text-on-dark);
+    isolation: isolate;
+  }
+  .hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -3;
+    transform-origin: 50% 40%;
+  }
+  .hero__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      linear-gradient(180deg, rgba(5, 18, 22, 0.75) 0%, rgba(5, 18, 22, 0.15) 30%, rgba(5, 18, 22, 0.35) 55%, var(--ink-950) 100%),
+      linear-gradient(90deg, rgba(5, 18, 22, 0.85) 0%, rgba(5, 18, 22, 0.2) 70%);
+  }
+  .hero__grid {
+    z-index: -1;
+    opacity: 0.35;
+  }
+  .hero__content {
+    padding-top: 140px;
+    padding-bottom: clamp(32px, 5vw, 56px);
+  }
+  .hero__badge {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    padding: 8px 16px 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line-dark);
+    background: rgba(5, 18, 22, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-size: 0.85rem;
+    margin-bottom: clamp(24px, 3vw, 36px);
+  }
+  .hero__badge b {
+    color: var(--cyan-500);
+    font-weight: 600;
+  }
+  .hero__badge .mono {
+    font-size: 0.78rem;
+    color: var(--muted-on-dark);
+  }
+  .hero__badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan-500);
+    box-shadow: 0 0 0 0 rgba(0, 184, 217, 0.6);
+    animation: dot-pulse 2s infinite;
+  }
+  .hero__badge-sep {
+    width: 1px;
+    height: 14px;
+    background: var(--line-dark);
+  }
+  .hero__title {
+    font-size: clamp(2.9rem, min(11.2vw, 17svh), 10.5rem);
+    margin-bottom: clamp(28px, 4vw, 48px);
+  }
+  .hero__line {
+    display: block;
+    overflow: clip;
+    padding-bottom: 0.06em;
+    margin-bottom: -0.06em;
+  }
+  .hero__line > span {
+    display: inline-block;
+  }
+  .hero__bottom {
+    display: grid;
+    gap: 28px;
+    align-items: end;
+  }
+  .hero__sub {
+    font-size: clamp(1rem, 1.35vw, 1.15rem);
+    color: #c3d6db;
+    max-width: 52ch;
+    text-wrap: pretty;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hero__meta {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .hero__bottom {
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+    }
+    .hero__meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 28px;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-on-dark);
+    }
+    .hero__meta-line {
+      flex: 1;
+      height: 1px;
+      background: var(--line-dark);
+    }
+  }
+  @media (max-width: 420px) {
+    .hero__actions .btn {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  .js .hero__line > span {
+    transform: translateY(105%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .hero__line > span {
+      transform: none;
+    }
+  }
+  @keyframes dot-pulse {
+    70% {
+      box-shadow: 0 0 0 10px rgba(0, 184, 217, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 184, 217, 0);
+    }
+  }
+</style>

@@ -1,0 +1,162 @@
+---
+import { Icon } from 'astro-icon/components';
+import Logo from '../Logo.astro';
+import { services } from '../../data/content';
+import { site, whatsappLink } from '../../config/site';
+
+const year = new Date().getFullYear();
+const links = [
+  { href: '#nr13', label: 'NR-13' },
+  { href: '#servicos', label: 'Serviços' },
+  { href: '#sobre', label: 'Sobre' },
+  { href: '#cases', label: 'Cases' },
+  { href: '#depoimentos', label: 'Depoimentos' },
+  { href: '#faq', label: 'Perguntas frequentes' },
+  { href: '#contato', label: 'Contato' },
+];
+---
+
+<footer class="footer dark">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <Logo variant="dark" class="footer__logo" />
+        <p>
+          Engenharia mecânica especializada em NR-13, laudos técnicos e ART. Base em {site.city} – {site.state}, atendimento
+          em todo o Brasil.
+        </p>
+        <a class="btn btn--sm" href={whatsappLink()} target="_blank" rel="noopener">
+          {site.whatsapp.display}
+          <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
+        </a>
+      </div>
+
+      <nav class="footer__col" aria-label="Rodapé">
+        <p class="footer__h mono">Navegação</p>
+        <ul>{links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+      </nav>
+
+      <div class="footer__col">
+        <p class="footer__h mono">Serviços</p>
+        <ul>
+          <li><a href="#nr13">NR-13 · Caldeiras, vasos e tubulações</a></li>
+          {services.slice(0, 6).map((s) => <li><a href="#servicos">{s.title}</a></li>)}
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <p class="footer__h mono">Contato</p>
+        <ul>
+          <li><a href={whatsappLink()} target="_blank" rel="noopener">WhatsApp {site.whatsapp.display}</a></li>
+          {site.email && <li><a href={`mailto:${site.email}`}>{site.email}</a></li>}
+          {site.instagram && <li><a href={site.instagram} target="_blank" rel="noopener">Instagram</a></li>}
+          <li>{site.city} – {site.state}</li>
+          <li>{site.engineer}</li>
+          <li class="mono">CREA {site.crea}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__wordmark" aria-hidden="true">MIRANDA</div>
+
+    <div class="footer__bottom">
+      <p>© {year} {site.name}. Todos os direitos reservados.</p>
+      {site.cnpj && <p class="mono">CNPJ {site.cnpj}</p>}
+      <a href="#inicio" class="footer__top-link">
+        Voltar ao topo <Icon name="lucide:arrow-up" />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--ink-950);
+    border-top: 1px solid var(--line-dark);
+    padding-top: clamp(64px, 8vw, 112px);
+    overflow: hidden;
+  }
+  .footer__top {
+    display: grid;
+    gap: 40px;
+  }
+  @media (min-width: 760px) {
+    .footer__top {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .footer__top {
+      grid-template-columns: 1.4fr 0.8fr 1fr 1fr;
+      gap: 48px;
+    }
+  }
+  .footer__brand {
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+    align-content: start;
+  }
+  .footer__brand p {
+    color: var(--muted-on-dark);
+    max-width: 40ch;
+  }
+  .footer__brand :global(.footer__logo) {
+    width: 240px;
+  }
+  .footer__h {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan-500);
+    margin-bottom: 18px;
+  }
+  .footer__col ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    color: var(--muted-on-dark);
+    font-size: 0.93rem;
+  }
+  .footer__col a:hover {
+    color: #fff;
+  }
+  .footer__wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(4.5rem, 21.5vw, 22rem);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    text-align: center;
+    margin-top: clamp(56px, 8vw, 104px);
+    color: rgba(0, 184, 217, 0.5);
+    mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
+    user-select: none;
+    white-space: nowrap;
+  }
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 24px 32px;
+    border-top: 1px solid var(--line-dark);
+    font-size: 0.85rem;
+    color: var(--muted-on-dark);
+  }
+  .footer__top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .footer__top-link :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+  .footer__top-link:hover {
+    color: #fff;
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+import { marquee } from '../../data/content';
+---
+
+<div class="marquee" aria-label="Áreas de atuação">
+  <ul class="sr-only">{marquee.map((m) => <li>{m}</li>)}</ul>
+  <div class="marquee__track" aria-hidden="true">
+    {
+      [0, 1].map(() => (
+        <div class="marquee__group">
+          {marquee.map((item) => (
+            <span class="marquee__item">
+              {item}
+              <svg viewBox="0 0 12 12" class="marquee__sep">
+                <path d="M6 0v12M0 6h12" stroke="currentColor" stroke-width="1.6" />
+              </svg>
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    background: var(--cyan-500);
+    color: var(--ink-950);
+    overflow: hidden;
+    padding-block: 18px;
+    position: relative;
+    z-index: 2;
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 48s linear infinite;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  .marquee__group {
+    display: flex;
+    flex-shrink: 0;
+  }
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 28px;
+    padding-right: 28px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1rem, 1.6vw, 1.3rem);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .marquee__sep {
+    width: 12px;
+    height: 12px;
+    opacity: 0.6;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>
