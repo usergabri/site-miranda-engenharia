@@ -1,52 +1,45 @@
 ---
 import { Image } from 'astro:assets';
+import CaseBody from '../CaseBody.astro';
 import { cases } from '../../data/content';
 import valve from '../../assets/img/matheus-valvula-seguranca.jpeg';
+
+const [lead, ...others] = cases;
 ---
 
 <section class="cases section dark" id="cases" aria-labelledby="cases-title">
   <div class="container">
     <div class="section-head section-head--split">
-      <div class="cases__titles">
-        <span class="eyebrow" data-reveal><b>/05</b> Cases</span>
-        <h2 class="h2" id="cases-title" data-split>
-          Da pequena planta ao projeto de <span class="accent">450 vasos de</span> <span class="nowrap"><span class="accent">pressão</span>.</span>
-        </h2>
-      </div>
-      <p class="lead" data-reveal>
-        Projetos reais, executados com planejamento, cronograma cumprido e documentação entregue completa.
+      <h2 class="h2" id="cases-title" data-split>
+        Cronograma cumprido, laudo entregue, <span class="accent">pendência <span class="nowrap">resolvida.</span></span>
+      </h2>
+      <p class="lead">
+        É o que os meus clientes mais destacam. Três trabalhos recentes, de 6 a 450 equipamentos, contados por quem
+        contratou.
       </p>
     </div>
 
-    <div class="cases__layout">
-      <figure class="cases__media" data-reveal>
+    <article class="case case--lead" data-reveal aria-labelledby={`case-${lead.id}`}>
+      <figure class="case__media">
         <Image
           src={valve}
-          alt="Matheus Miranda inspecionando válvula de segurança de uma caldeira em planta industrial"
+          alt="Matheus Miranda inspecionando a válvula de segurança de uma caldeira em planta industrial"
           widths={[480, 800, 1100]}
-          sizes="(min-width: 1000px) 45vw, 100vw"
+          sizes="(min-width: 1000px) 42vw, 100vw"
           data-parallax
         />
       </figure>
+      <CaseBody c={lead} lead />
+    </article>
 
-      <ul class="cases__list">
-        {
-          cases.map((c, i) => (
-            <li class="case" data-reveal style={`--d:${i}`}>
-              <div class="case__metric">
-                <span class="case__number display">{c.number}</span>
-                <span class="case__unit mono">{c.unit}</span>
-              </div>
-              <div class="case__body">
-                <h3 class="h3">{c.title}</h3>
-                <p class="case__place mono">{c.place}</p>
-                <p class="case__text">{c.text}</p>
-                {c.via && <p class="case__via">{c.via}</p>}
-              </div>
-            </li>
-          ))
-        }
-      </ul>
+    <div class="cases__pair">
+      {
+        others.map((c) => (
+          <article class="case" data-reveal aria-labelledby={`case-${c.id}`}>
+            <CaseBody c={c} />
+          </article>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -55,96 +48,64 @@ import valve from '../../assets/img/matheus-valvula-seguranca.jpeg';
   .cases {
     border-top: 1px solid var(--line-dark);
   }
-  .cases__titles {
-    display: grid;
-    gap: 24px;
-    justify-items: start;
+  .case {
+    padding: clamp(24px, 3vw, 40px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line-dark);
+    background: var(--ink-900);
   }
-  .cases__layout {
+  .case--lead {
     display: grid;
-    gap: 16px;
+    gap: clamp(28px, 4vw, 56px);
+    margin-bottom: 16px;
   }
   @media (min-width: 1000px) {
-    .cases__layout {
+    .case--lead {
       grid-template-columns: 0.9fr 1.1fr;
-      gap: 24px;
+      align-items: stretch;
     }
   }
-  .cases__media {
-    border-radius: var(--radius-lg);
+  .case__media {
+    border-radius: var(--radius);
     overflow: hidden;
     aspect-ratio: 4 / 3;
     background: var(--ink-850);
   }
   @media (min-width: 1000px) {
-    .cases__media {
+    .case__media {
       aspect-ratio: auto;
       min-height: 420px;
     }
   }
-  .cases__media :global(img) {
+  .case__media :global(img) {
     width: 100%;
     height: 115%;
     object-fit: cover;
     object-position: 65% 50%;
   }
-  .cases__list {
-    list-style: none;
-    padding: 0;
+  .cases__pair {
     display: grid;
     gap: 16px;
   }
-  .case {
-    display: grid;
-    gap: 20px;
-    padding: clamp(22px, 2.6vw, 32px);
-    border-radius: var(--radius);
-    border: 1px solid var(--line-dark);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
-    transition: border-color 0.4s var(--ease-out);
-  }
-  .case:hover {
-    border-color: rgba(0, 184, 217, 0.45);
-  }
-  @media (min-width: 640px) {
-    .case {
-      grid-template-columns: 190px 1fr;
-      gap: 28px;
+  @media (min-width: 900px) {
+    .cases__pair {
+      grid-template-columns: 1fr 1fr;
     }
   }
-  .case__metric {
-    display: grid;
-    align-content: start;
-    gap: 6px;
-  }
-  .case__number {
-    font-size: clamp(2.8rem, 5vw, 3.8rem);
-    color: var(--cyan-500);
-    white-space: nowrap;
-  }
-  .case__unit {
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted-on-dark);
-  }
-  .case__body {
-    display: grid;
-    gap: 6px;
-    align-content: start;
-  }
-  .case__place {
-    font-size: 0.78rem;
-    color: var(--cyan-300);
-  }
-  .case__text {
-    color: var(--muted-on-dark);
-    font-size: 0.95rem;
-    margin-top: 6px;
-  }
-  .case__via {
-    font-size: 0.82rem;
-    color: #6f8a91;
-    font-style: italic;
-  }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-dialog-open]').forEach((btn) => {
+    const dialog = document.getElementById(btn.dataset.dialogOpen!) as HTMLDialogElement | null;
+    if (!dialog) return;
+    btn.addEventListener('click', () => {
+      dialog.showModal();
+      window.dispatchEvent(new CustomEvent('menu:open'));
+    });
+    dialog.addEventListener('close', () => window.dispatchEvent(new CustomEvent('menu:close')));
+    dialog.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  });
+</script>

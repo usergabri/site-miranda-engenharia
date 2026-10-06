@@ -10,7 +10,8 @@ const links = [
   { href: '#servicos', label: 'Serviços' },
   { href: '#sobre', label: 'Sobre' },
   { href: '#cases', label: 'Cases' },
-  { href: '#depoimentos', label: 'Depoimentos' },
+  { href: '#processo', label: 'Como trabalho' },
+  { href: '#atendimento', label: 'Área de atendimento' },
   { href: '#faq', label: 'Perguntas frequentes' },
   { href: '#contato', label: 'Contato' },
 ];
@@ -32,20 +33,20 @@ const links = [
       </div>
 
       <nav class="footer__col" aria-label="Rodapé">
-        <p class="footer__h mono">Navegação</p>
+        <p class="footer__h">Navegação</p>
         <ul>{links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
       </nav>
 
       <div class="footer__col">
-        <p class="footer__h mono">Serviços</p>
+        <p class="footer__h">Serviços</p>
         <ul>
           <li><a href="#nr13">NR-13 · Caldeiras, vasos e tubulações</a></li>
-          {services.slice(0, 6).map((s) => <li><a href="#servicos">{s.title}</a></li>)}
+          {services.map((s) => <li><a href="#servicos">{s.title}</a></li>)}
         </ul>
       </div>
 
       <div class="footer__col">
-        <p class="footer__h mono">Contato</p>
+        <p class="footer__h">Contato</p>
         <ul>
           <li><a href={whatsappLink()} target="_blank" rel="noopener">WhatsApp {site.whatsapp.display}</a></li>
           {site.email && <li><a href={`mailto:${site.email}`}>{site.email}</a></li>}
@@ -56,8 +57,6 @@ const links = [
         </ul>
       </div>
     </div>
-
-    <div class="footer__wordmark" aria-hidden="true">MIRANDA</div>
 
     <div class="footer__bottom">
       <p>© {year} {site.name}. Todos os direitos reservados.</p>
@@ -105,8 +104,9 @@ const links = [
     width: 240px;
   }
   .footer__h {
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--cyan-500);
     margin-bottom: 18px;
@@ -115,26 +115,24 @@ const links = [
     list-style: none;
     padding: 0;
     display: grid;
-    gap: 10px;
+    gap: 0;
     color: var(--muted-on-dark);
     font-size: 0.93rem;
   }
+  /* Alvos de toque de 44px no celular */
+  .footer__col a,
+  .footer__top-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  @media (min-width: 1080px) {
+    .footer__col a {
+      min-height: 32px;
+    }
+  }
   .footer__col a:hover {
     color: #fff;
-  }
-  .footer__wordmark {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(4.5rem, 21.5vw, 22rem);
-    line-height: 0.8;
-    letter-spacing: -0.06em;
-    text-align: center;
-    margin-top: clamp(56px, 8vw, 104px);
-    color: rgba(0, 184, 217, 0.5);
-    mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
-    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
-    user-select: none;
-    white-space: nowrap;
   }
   .footer__bottom {
     display: flex;
@@ -142,6 +140,7 @@ const links = [
     gap: 12px 32px;
     justify-content: space-between;
     align-items: center;
+    margin-top: clamp(48px, 6vw, 72px);
     padding-block: 24px 32px;
     border-top: 1px solid var(--line-dark);
     font-size: 0.85rem;

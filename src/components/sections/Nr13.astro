@@ -1,36 +1,29 @@
 ---
 import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
-import { nr13Equipments, nr13Items } from '../../data/content';
-import { serviceMessage, whatsappLink } from '../../config/site';
+import { nr13Equipments, nr13Scope } from '../../data/content';
+import { serviceMessage, site, whatsappLink } from '../../config/site';
 import psv from '../../assets/img/calibracao-psv.jpeg';
 ---
 
 <section class="nr13 section dark" id="nr13" aria-labelledby="nr13-title">
   <div class="tech-grid" aria-hidden="true"></div>
-  <div class="container nr13__inner">
+  <div class="container nr13__top">
     <div class="nr13__intro">
-      <span class="eyebrow" data-reveal><b>/01</b> Especialidade da empresa</span>
       <h2 class="nr13__title display" id="nr13-title" data-split>
         Especialista em <span class="accent">NR-13</span>
       </h2>
-      <p class="lead" data-reveal>
-        Caldeiras, vasos de pressão e tubulações operam sob risco permanente. A NR-13 define como inspecionar, documentar
-        e manter esses equipamentos seguros, e nós cuidamos de todo o processo, da medição em campo ao relatório assinado
-        por Profissional Habilitado.
+      <p class="lead">
+        Caldeiras, vasos de pressão e tubulações operam sob risco permanente. A NR-13 define como inspecionar,
+        documentar e manter esses equipamentos seguros. Eu cuido do processo inteiro, da medição em campo ao relatório
+        assinado e à ART.
       </p>
-
-      <ul class="nr13__equip">
+      <ul class="nr13__equip" aria-label="Equipamentos atendidos">
         {
-          nr13Equipments.map((e, i) => (
-            <li class="equip" data-reveal style={`--d:${i}`}>
-              <span class="equip__icon">
-                <Icon name={e.icon} />
-              </span>
-              <div>
-                <h3 class="h3">{e.title}</h3>
-                <p>{e.text}</p>
-              </div>
+          nr13Equipments.map((e) => (
+            <li>
+              <Icon name={e.icon} aria-hidden="true" />
+              {e.title}
             </li>
           ))
         }
@@ -38,49 +31,89 @@ import psv from '../../assets/img/calibracao-psv.jpeg';
     </div>
 
     <figure class="nr13__media" data-reveal>
-      <div class="nr13__img" data-parallax-wrap>
+      <div class="nr13__img">
         <Image
           src={psv}
           alt="Bancada de calibração de válvula de segurança com manômetro digital marcando a pressão de teste"
           widths={[480, 720, 960]}
-          sizes="(min-width: 1000px) 40vw, 100vw"
+          sizes="(min-width: 1000px) 38vw, 100vw"
           data-parallax
         />
       </div>
-      <figcaption class="nr13__tag">
-        <span class="mono">Em campo</span>
-        Calibração de válvula de segurança (PSV) com manômetro digital
-      </figcaption>
+      <figcaption>Calibração de válvula de segurança (PSV) com manômetro digital, em campo.</figcaption>
     </figure>
   </div>
 
   <div class="container">
-    <div class="nr13__scope">
-      <div class="nr13__scope-head">
-        <h3 class="h2" data-split>O que entregamos em NR-13</h3>
-        <p class="lead" data-reveal>Escopo completo para regularizar e manter seus equipamentos em conformidade.</p>
-      </div>
-      <ol class="scope">
+    <article class="report" data-reveal aria-labelledby="report-title">
+      <header class="report__head">
+        <div>
+          <p class="report__doc">Relatório de Inspeção de Segurança</p>
+          <h3 class="report__title" id="report-title">O que eu entrego em NR-13</h3>
+        </div>
+        <dl class="report__meta">
+          <div>
+            <dt>Norma</dt>
+            <dd>NR-13</dd>
+          </div>
+          <div>
+            <dt>Equipamentos</dt>
+            <dd>Caldeiras · Vasos · Tubulações</dd>
+          </div>
+          <div>
+            <dt>Inspeção</dt>
+            <dd>Inicial · Periódica · Extraordinária</dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="report__body">
         {
-          nr13Items.map((item, i) => (
-            <li class="scope__item" data-reveal>
-              <span class="scope__n mono">{String(i + 1).padStart(2, '0')}</span>
-              <span class="scope__text">{item}</span>
-              <Icon name="lucide:check" class="scope__check" aria-hidden="true" />
-            </li>
+          nr13Scope.map((group, gi) => (
+            <section class="report__group" aria-labelledby={`scope-${gi}`}>
+              <h4 class="report__group-title" id={`scope-${gi}`}>
+                <span class="report__group-n mono" aria-hidden="true">
+                  {gi + 1}.
+                </span>
+                {group.title}
+              </h4>
+              <ul>
+                {group.items.map((item) => (
+                  <li>
+                    <span class="report__check" aria-hidden="true">
+                      <Icon name="lucide:check" />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))
         }
-      </ol>
-    </div>
+      </div>
+
+      <footer class="report__sign">
+        <div class="report__signature">
+          <span class="report__line" aria-hidden="true"></span>
+          <p class="report__name">{site.engineer}</p>
+          <p class="report__role">Profissional Habilitado · <span class="mono">CREA {site.crea}</span></p>
+        </div>
+        <p class="report__stamp" aria-label="Com ART emitida">ART<br />emitida</p>
+      </footer>
+    </article>
 
     <div class="nr13__cta" data-reveal>
       <div>
         <p class="nr13__cta-title">Seus equipamentos estão em dia com a NR-13?</p>
-        <p class="nr13__cta-text">Fazemos o inventário e indicamos o que falta para a regularização.</p>
+        <p class="nr13__cta-text">Faço o inventário e mostro o que falta para a regularização.</p>
       </div>
-      <a class="btn" href={whatsappLink(serviceMessage('NR-13 (caldeiras, vasos de pressão ou tubulações)'))} target="_blank" rel="noopener">
+      <a
+        class="btn"
+        href={whatsappLink(serviceMessage('NR-13 (caldeiras, vasos de pressão ou tubulações)'))}
+        target="_blank"
+        rel="noopener">
         Avaliar meus equipamentos
-        <span class="btn__dot"><Icon name="lucide:arrow-up-right" /></span>
+        <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
       </a>
     </div>
   </div>
@@ -90,16 +123,16 @@ import psv from '../../assets/img/calibracao-psv.jpeg';
   .nr13 {
     overflow: hidden;
   }
-  .nr13__inner {
+  .nr13__top {
     position: relative;
     display: grid;
-    gap: clamp(48px, 6vw, 80px);
-    margin-bottom: clamp(80px, 10vw, 140px);
+    gap: clamp(40px, 6vw, 72px);
+    margin-bottom: clamp(56px, 8vw, 104px);
+    align-items: center;
   }
   @media (min-width: 1000px) {
-    .nr13__inner {
-      grid-template-columns: 1.1fr 0.9fr;
-      align-items: start;
+    .nr13__top {
+      grid-template-columns: 1.15fr 0.85fr;
     }
   }
   .nr13__intro {
@@ -108,65 +141,32 @@ import psv from '../../assets/img/calibracao-psv.jpeg';
     justify-items: start;
   }
   .nr13__title {
-    font-size: clamp(3rem, 7.6vw, 7rem);
+    font-size: clamp(3rem, 7.4vw, 6rem);
   }
   .nr13__equip {
     list-style: none;
     padding: 0;
-    display: grid;
-    gap: 12px;
-    width: 100%;
-    margin-top: 12px;
-  }
-  .equip {
     display: flex;
-    gap: 18px;
-    align-items: flex-start;
-    padding: 20px;
-    border: 1px solid var(--line-dark);
-    border-radius: var(--radius);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01));
-    transition:
-      border-color 0.35s var(--ease-out),
-      background 0.35s var(--ease-out);
+    flex-wrap: wrap;
+    gap: 10px 28px;
   }
-  .equip:hover {
-    border-color: rgba(0, 184, 217, 0.45);
-    background: rgba(0, 184, 217, 0.06);
+  .nr13__equip li {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.15rem;
   }
-  .equip__icon {
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: rgba(0, 184, 217, 0.12);
+  .nr13__equip :global(svg) {
+    width: 22px;
+    height: 22px;
     color: var(--cyan-500);
-  }
-  .equip__icon :global(svg) {
-    width: 24px;
-    height: 24px;
-  }
-  .equip p {
-    color: var(--muted-on-dark);
-    font-size: 0.95rem;
-    margin-top: 4px;
-  }
-
-  .nr13__media {
-    position: relative;
-  }
-  @media (min-width: 1000px) {
-    .nr13__media {
-      position: sticky;
-      top: 110px;
-    }
   }
   .nr13__img {
     border-radius: var(--radius-lg);
     overflow: hidden;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 4.4;
     background: var(--ink-850);
   }
   .nr13__img :global(img) {
@@ -175,100 +175,206 @@ import psv from '../../assets/img/calibracao-psv.jpeg';
     object-fit: cover;
     object-position: 50% 45%;
   }
-  .nr13__tag {
-    position: absolute;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    display: grid;
-    gap: 4px;
-    padding: 14px 18px;
-    border-radius: 14px;
-    background: rgba(5, 18, 22, 0.72);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--line-dark);
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-  .nr13__tag .mono {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--cyan-500);
+  .nr13__media figcaption {
+    margin-top: 12px;
+    font-size: 0.88rem;
+    color: var(--muted-on-dark);
   }
 
-  .nr13__scope {
-    display: grid;
-    gap: 40px;
+  /* Relatório: uma folha de papel sobre a mesa escura */
+  .report {
+    position: relative;
+    max-width: 1040px;
+    margin-inline: auto;
+    background: #fbfcfc;
+    color: var(--text);
+    border-radius: 6px;
+    padding: clamp(24px, 4vw, 56px);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 40px 80px -30px rgba(0, 0, 0, 0.65);
   }
-  @media (min-width: 1000px) {
-    .nr13__scope {
-      grid-template-columns: 0.8fr 1.2fr;
-      gap: 64px;
-    }
-    .nr13__scope-head {
-      position: sticky;
-      top: 120px;
-      align-self: start;
-    }
-  }
-  .nr13__scope-head {
+  .report__head {
     display: grid;
     gap: 20px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--text);
   }
-  .scope {
+  @media (min-width: 820px) {
+    .report__head {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+  }
+  .report__doc {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan-700);
+  }
+  .report__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-top: 6px;
+  }
+  .report__meta {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    border: 1px solid var(--line);
+    margin: 0;
+  }
+  .report__meta > div {
+    padding: 10px 14px;
+    border-left: 1px solid var(--line);
+  }
+  .report__meta > div:first-child {
+    border-left: 0;
+  }
+  .report__meta dt {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .report__meta dd {
+    margin: 2px 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  @media (max-width: 640px) {
+    .report__meta {
+      grid-template-columns: 1fr;
+    }
+    .report__meta > div {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+    .report__meta > div:first-child {
+      border-top: 0;
+    }
+  }
+  .report__body {
+    display: grid;
+    gap: 0 48px;
+    padding-block: 12px;
+  }
+  @media (min-width: 820px) {
+    .report__body {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .report__group {
+    padding-block: 22px 8px;
+  }
+  .report__group-title {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .report__group-n {
+    font-size: 0.85rem;
+    color: var(--cyan-700);
+  }
+  .report__group ul {
     list-style: none;
     padding: 0;
-    border-top: 1px solid var(--line-dark);
   }
-  .scope__item {
+  .report__group li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 11px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 0.98rem;
+  }
+  .report__check {
     display: grid;
-    grid-template-columns: 44px 1fr 24px;
-    gap: 16px;
-    align-items: center;
-    padding: 20px 4px;
-    border-bottom: 1px solid var(--line-dark);
-    font-size: clamp(1rem, 1.3vw, 1.12rem);
-    transition:
-      padding 0.35s var(--ease-out),
-      background 0.35s var(--ease-out);
-  }
-  .scope__item:hover {
-    background: linear-gradient(90deg, rgba(0, 184, 217, 0.08), transparent 70%);
-    padding-left: 14px;
-  }
-  .scope__n {
-    font-size: 0.8rem;
-    color: var(--cyan-500);
-  }
-  .scope__text {
-    text-wrap: pretty;
-  }
-  .scope__item :global(.scope__check) {
+    place-items: center;
+    flex-shrink: 0;
     width: 20px;
     height: 20px;
-    color: var(--cyan-500);
-    opacity: 0.7;
+    margin-top: 2px;
+    border: 1.5px solid var(--text);
+    border-radius: 3px;
+    color: var(--cyan-700);
+  }
+  .report__check :global(svg) {
+    width: 15px;
+    height: 15px;
+    stroke-width: 3;
+  }
+  .report__sign {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 2px solid var(--text);
+  }
+  .report__signature {
+    min-width: min(320px, 100%);
+  }
+  .report__line {
+    display: block;
+    height: 1px;
+    background: var(--text);
+    margin-bottom: 10px;
+  }
+  .report__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  .report__role {
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .report__stamp {
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    border: 3px double var(--cyan-700);
+    color: var(--cyan-700);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    transform: rotate(-12deg);
+    opacity: 0.9;
   }
 
   .nr13__cta {
-    margin-top: clamp(56px, 7vw, 96px);
+    max-width: 1040px;
+    margin: clamp(32px, 4vw, 48px) auto 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: clamp(24px, 3vw, 40px);
-    border-radius: var(--radius-lg);
-    background:
-      radial-gradient(120% 140% at 100% 0%, rgba(0, 184, 217, 0.28), transparent 55%),
-      var(--ink-850);
-    border: 1px solid var(--line-dark);
+    padding-top: clamp(24px, 3vw, 32px);
+    border-top: 1px solid var(--line-dark);
   }
   .nr13__cta-title {
     font-family: var(--font-display);
-    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
     font-weight: 500;
     letter-spacing: -0.025em;
     line-height: 1.15;

@@ -101,6 +101,17 @@ a {
   color: inherit;
   text-decoration: none;
 }
+html {
+  scrollbar-color: #8fa9b0 var(--paper);
+  accent-color: var(--cyan-600);
+}
+body {
+  caret-color: var(--cyan-600);
+}
+::placeholder {
+  color: #5d6e73;
+  opacity: 1;
+}
 ::selection {
   background: var(--cyan-500);
   color: var(--ink-950);
@@ -200,45 +211,6 @@ a {
 /* Mantém a pontuação colada à última palavra destacada */
 .nowrap {
   white-space: nowrap;
-}
-
-/* Rótulo de seção em pílula mono */
-.eyebrow {
-  display: inline-flex;
-  justify-self: start;
-  width: fit-content;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 7px 14px 7px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
-}
-.eyebrow::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--cyan-500);
-  box-shadow: 0 0 0 4px rgba(0, 184, 217, 0.18);
-}
-.eyebrow b {
-  color: var(--cyan-600);
-  font-weight: 600;
-}
-.dark .eyebrow {
-  color: var(--muted-on-dark);
-  border-color: var(--line-dark);
-  background: rgba(255, 255, 255, 0.03);
-}
-.dark .eyebrow b {
-  color: var(--cyan-500);
 }
 
 .section-head {
@@ -371,28 +343,10 @@ a {
   opacity: 0.6;
 }
 
-/* ---------- Animações (estado inicial só quando JS ativo) ---------- */
-.js [data-reveal] {
-  opacity: 0;
-  transform: translateY(28px);
-}
-.js [data-split] {
-  visibility: hidden;
-}
-.split-line {
-  overflow: clip;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
-}
+/* ---------- Movimento ---------- */
+
 
 @media (prefers-reduced-motion: reduce) {
-  .js [data-reveal] {
-    opacity: 1;
-    transform: none;
-  }
-  .js [data-split] {
-    visibility: visible;
-  }
   *,
   *::before,
   *::after {

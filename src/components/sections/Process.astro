@@ -2,33 +2,31 @@
 import { process } from '../../data/content';
 ---
 
-<section class="process section" aria-labelledby="process-title">
+<section class="process section" id="processo" aria-labelledby="process-title">
   <div class="container">
     <div class="section-head section-head--split">
-      <div class="process__titles">
-        <span class="eyebrow" data-reveal><b>/04</b> Como trabalhamos</span>
-        <h2 class="h2" id="process-title" data-split>
-          Cinco etapas, <span class="accent">nenhuma pendência</span> esquecida.
-        </h2>
-      </div>
-      <p class="lead" data-reveal>
-        Um processo claro do primeiro contato à regularização. Você sabe o que está sendo feito, o que falta e quando cada
-        etapa termina.
+      <h2 class="h2" id="process-title" data-split>
+        Cinco etapas, <span class="accent">nenhuma pendência</span> esquecida.
+      </h2>
+      <p class="lead">
+        Do primeiro contato à regularização, você sabe o que estou fazendo, o que falta e quando cada etapa termina.
       </p>
     </div>
 
-    <ol class="steps" data-steps>
-      <span class="steps__rail" aria-hidden="true"><span class="steps__fill" data-steps-fill></span></span>
+    <div class="steps-wrap" data-steps>
+    <span class="steps__rail" aria-hidden="true"><span class="steps__fill" data-steps-fill></span></span>
+    <ol class="steps">
       {
         process.map((p, i) => (
-          <li class="step" data-reveal style={`--d:${i}`}>
-            <span class="step__n mono">{String(i + 1).padStart(2, '0')}</span>
+          <li class="step">
+            <span class="step__n" aria-hidden="true">{i + 1}</span>
             <h3 class="h3">{p.title}</h3>
             <p>{p.text}</p>
           </li>
         ))
       }
     </ol>
+    </div>
   </div>
 </section>
 
@@ -36,10 +34,8 @@ import { process } from '../../data/content';
   .process {
     background: var(--surface);
   }
-  .process__titles {
-    display: grid;
-    gap: 24px;
-    justify-items: start;
+  .steps-wrap {
+    position: relative;
   }
   .steps {
     position: relative;
@@ -73,8 +69,9 @@ import { process } from '../../data/content';
     border-radius: 50%;
     background: var(--ink-950);
     color: var(--cyan-500);
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
     margin-bottom: 14px;
     position: relative;
     z-index: 1;

@@ -4,37 +4,44 @@ import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
 
-/* ---------- Vídeos: tocam só quando visíveis ---------- */
+/* ---------- Vídeos ---------- */
+function bindToggle(video: HTMLVideoElement, toggle: HTMLButtonElement | null, onUserPause: (paused: boolean) => void) {
+  const sync = () => {
+    const paused = video.paused;
+    toggle?.classList.toggle('is-paused', paused);
+    toggle?.setAttribute('aria-label', paused ? 'Reproduzir vídeo' : 'Pausar vídeo');
+  };
+  video.addEventListener('play', sync);
+  video.addEventListener('pause', sync);
+  sync();
+  toggle?.addEventListener('click', () => {
+    if (video.paused) {
+      onUserPause(false);
+      video.play().catch(() => {});
+    } else {
+      onUserPause(true);
+      video.pause();
+    }
+  });
+}
+
 function setupVideos() {
+  // Vídeo de fundo do topo: botão de pausa; não toca com economia de dados ou movimento reduzido
   const hero = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-  if (hero && reduceMotion) {
-    hero.removeAttribute('autoplay');
-    hero.pause();
+  if (hero) {
+    if (reduceMotion || saveData) {
+      hero.removeAttribute('autoplay');
+      hero.pause();
+    }
+    bindToggle(hero, document.querySelector('[data-hero-pause]'), () => {});
   }
 
+  // Demais vídeos: tocam só quando visíveis
   document.querySelectorAll<HTMLVideoElement>('[data-autoplay-visible]').forEach((video) => {
-    const toggle = video.parentElement?.querySelector<HTMLButtonElement>('[data-video-toggle]');
-    let userPaused = reduceMotion;
-
-    const sync = () => {
-      const paused = video.paused;
-      toggle?.classList.toggle('is-paused', paused);
-      toggle?.setAttribute('aria-label', paused ? 'Reproduzir vídeo' : 'Pausar vídeo');
-    };
-    video.addEventListener('play', sync);
-    video.addEventListener('pause', sync);
-    sync();
-
-    toggle?.addEventListener('click', () => {
-      if (video.paused) {
-        userPaused = false;
-        video.play().catch(() => {});
-      } else {
-        userPaused = true;
-        video.pause();
-      }
-    });
+    let userPaused = reduceMotion || saveData;
+    bindToggle(video, video.parentElement?.querySelector('[data-video-toggle]') ?? null, (p) => (userPaused = p));
 
     new IntersectionObserver(
       ([entry]) => {
@@ -50,11 +57,7 @@ function setupVideos() {
   });
 }
 
-/* ---------- Contadores ---------- */
-function formatNumber(n: number) {
-  return Math.round(n).toLocaleString('pt-BR');
-}
-
+/* ---------- Movimento ---------- */
 function setupMotion() {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -70,6 +73,7 @@ function setupMotion() {
   document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {
       const id = a.getAttribute('href')!;
+      if (id === '#') return;
       const target = id === '#inicio' ? 0 : document.querySelector<HTMLElement>(id);
       if (target === null) return;
       e.preventDefault();
@@ -78,12 +82,16 @@ function setupMotion() {
     });
   });
 
-  /* Hero */
+  /* Momento principal: abertura do topo */
   const heroWords = gsap.utils.toArray<HTMLElement>('[data-hero-word]');
   const heroVideo = document.querySelector('[data-hero-video]');
   const intro = gsap.timeline({ defaults: { ease: 'expo.out' } });
   if (heroVideo) intro.fromTo(heroVideo, { scale: 1.18 }, { scale: 1, duration: 2.4 }, 0);
   intro.fromTo(heroWords, { yPercent: 105 }, { yPercent: 0, duration: 1.4, stagger: 0.12, immediateRender: true }, 0.15);
+  // Se a animação não andar (aba em segundo plano, máquina lenta), mostra o título
+  setTimeout(() => {
+    if (intro.progress() < 0.5) intro.progress(1);
+  }, 2500);
 
   const heroFrame = document.querySelector('[data-hero-frame]');
   if (heroFrame && heroVideo) {
@@ -95,15 +103,14 @@ function setupMotion() {
     });
   }
 
-  /* Títulos com máscara por linha */
+  /* Títulos com máscara por linha (só os que começam abaixo da dobra) */
   document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
     SplitText.create(el, {
       type: 'lines',
       mask: 'lines',
-      linesClass: 'split-line-inner',
       autoSplit: true,
       onSplit(self) {
-        gsap.set(el, { visibility: 'visible' });
         return gsap.from(self.lines, {
           yPercent: 110,
           duration: 1.1,
@@ -115,8 +122,12 @@ function setupMotion() {
     });
   });
 
-  /* Revelação genérica, em lote */
-  ScrollTrigger.batch('[data-reveal]', {
+  /* Blocos: só são escondidos pelo JS, então sem JS tudo aparece */
+  const reveals = gsap.utils
+    .toArray<HTMLElement>('[data-reveal]')
+    .filter((el) => el.getBoundingClientRect().top > window.innerHeight);
+  gsap.set(reveals, { opacity: 0, y: 32 });
+  ScrollTrigger.batch(reveals, {
     start: 'top 90%',
     once: true,
     onEnter: (batch) =>
@@ -130,27 +141,11 @@ function setupMotion() {
         overwrite: true,
       }),
   });
+
   // Fontes e imagens mudam a altura da página: recalcula as posições dos gatilhos
   ScrollTrigger.refresh();
   document.fonts?.ready.then(() => ScrollTrigger.refresh());
   window.addEventListener('load', () => ScrollTrigger.refresh());
-  document.querySelectorAll('img[loading="lazy"]').forEach((img) =>
-    img.addEventListener('load', () => ScrollTrigger.refresh(), { once: true }),
-  );
-
-  /* Contadores */
-  document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
-    const end = Number(el.dataset.count);
-    const obj = { v: 0 };
-    el.textContent = '0';
-    gsap.to(obj, {
-      v: end,
-      duration: 2,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: el, start: 'top 90%', once: true },
-      onUpdate: () => (el.textContent = formatNumber(obj.v)),
-    });
-  });
 
   /* Parallax de imagens */
   document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((img) => {
@@ -168,11 +163,15 @@ function setupMotion() {
   /* Linha do processo */
   const fill = document.querySelector('[data-steps-fill]');
   if (fill) {
-    gsap.to(fill, {
-      scaleX: 1,
-      ease: 'none',
-      scrollTrigger: { trigger: '[data-steps]', start: 'top 75%', end: 'bottom 60%', scrub: 0.6 },
-    });
+    gsap.fromTo(
+      fill,
+      { scaleX: 0 },
+      {
+        scaleX: 1,
+        ease: 'none',
+        scrollTrigger: { trigger: '[data-steps]', start: 'top 75%', end: 'bottom 60%', scrub: 0.6 },
+      },
+    );
   }
 
   /* Rotas do mapa */

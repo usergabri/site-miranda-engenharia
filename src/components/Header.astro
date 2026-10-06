@@ -8,7 +8,7 @@ const nav = [
   { href: '#servicos', label: 'Serviços' },
   { href: '#sobre', label: 'Sobre' },
   { href: '#cases', label: 'Cases' },
-  { href: '#depoimentos', label: 'Depoimentos' },
+  { href: '#faq', label: 'Dúvidas' },
   { href: '#contato', label: 'Contato' },
 ];
 ---
@@ -32,8 +32,11 @@ const nav = [
     </nav>
 
     <a class="btn btn--sm header__cta" href={whatsappLink()} target="_blank" rel="noopener">
-      Solicitar orçamento
-      <span class="btn__dot"><Icon name="lucide:arrow-up-right" /></span>
+      Pedir orçamento
+      <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
+    </a>
+    <a class="header__wa" href={whatsappLink()} target="_blank" rel="noopener" aria-label="Pedir orçamento pelo WhatsApp">
+      <Icon name="tabler:brand-whatsapp" />
     </a>
 
     <button class="header__toggle" type="button" aria-expanded="false" aria-controls="menu-mobile" data-menu-toggle>
@@ -49,7 +52,6 @@ const nav = [
           nav.map((item, i) => (
             <li style={`--i:${i}`}>
               <a href={item.href} data-menu-link>
-                <span class="mono">{String(i + 1).padStart(2, '0')}</span>
                 {item.label}
               </a>
             </li>
@@ -57,7 +59,7 @@ const nav = [
         }
       </ul>
       <a class="btn" href={whatsappLink()} target="_blank" rel="noopener">
-        Solicitar orçamento
+        Pedir orçamento
         <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
       </a>
     </nav>
@@ -134,6 +136,21 @@ const nav = [
   .header__cta {
     display: none;
   }
+  .header__wa {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--cyan-500);
+    color: var(--ink-950);
+    position: relative;
+    z-index: 2;
+  }
+  .header__wa :global(svg) {
+    width: 24px;
+    height: 24px;
+  }
   .header__toggle {
     display: grid;
     place-items: center;
@@ -173,7 +190,8 @@ const nav = [
     .header__cta {
       display: inline-flex;
     }
-    .header__toggle {
+    .header__toggle,
+    .header__wa {
       display: none;
     }
   }
@@ -204,17 +222,11 @@ const nav = [
   .menu li a {
     display: flex;
     align-items: baseline;
-    gap: 16px;
     padding: 18px 0;
     font-family: var(--font-display);
     font-size: clamp(1.8rem, 7vw, 2.4rem);
     font-weight: 500;
     letter-spacing: -0.03em;
-  }
-  .menu li .mono {
-    font-size: 0.75rem;
-    color: var(--cyan-500);
-    letter-spacing: 0;
   }
   @keyframes menu-in {
     from {
@@ -254,9 +266,8 @@ const nav = [
 
   // Destaca o item da seção visível
   const links = [...header.querySelectorAll<HTMLAnchorElement>('.header__nav a')];
-  const sections = links
-    .map((a) => document.querySelector<HTMLElement>(a.getAttribute('href')!))
-    .filter((s): s is HTMLElement => !!s);
+  // Observa todas as seções com id: fora das seções do menu, nenhum item fica ativo
+  const sections = [...document.querySelectorAll<HTMLElement>('main section[id]')];
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {

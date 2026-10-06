@@ -3,8 +3,8 @@ import { Icon } from 'astro-icon/components';
 import { whatsappLink } from '../config/site';
 ---
 
-<a class="wa-float" href={whatsappLink()} target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
-  <span class="wa-float__label">Fale com o engenheiro</span>
+<a class="wa-float" href={whatsappLink()} target="_blank" rel="noopener" aria-label="Pedir orçamento pelo WhatsApp" data-wa-float>
+  <span class="wa-float__label">Pedir orçamento</span>
   <span class="wa-float__icon"><Icon name="tabler:brand-whatsapp" /></span>
 </a>
 
@@ -12,7 +12,7 @@ import { whatsappLink } from '../config/site';
   .wa-float {
     position: fixed;
     right: clamp(16px, 2.5vw, 28px);
-    bottom: clamp(16px, 2.5vw, 28px);
+    bottom: calc(clamp(16px, 2.5vw, 28px) + env(safe-area-inset-bottom, 0px));
     z-index: 60;
     display: flex;
     align-items: center;
@@ -23,7 +23,16 @@ import { whatsappLink } from '../config/site';
     color: #fff;
     box-shadow: 0 12px 32px -8px rgba(5, 18, 22, 0.5);
     border: 1px solid var(--line-dark);
-    transition: transform 0.35s var(--ease-out);
+    transition:
+      transform 0.35s var(--ease-out),
+      opacity 0.35s var(--ease-out),
+      visibility 0.35s;
+  }
+  /* Some quando já há um botão de WhatsApp na tela (topo, contato, rodapé) */
+  .wa-float.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
   }
 :global(html:has(.menu:not([hidden]))) .wa-float {
     display: none;
@@ -75,3 +84,18 @@ import { whatsappLink } from '../config/site';
     }
   }
 </style>
+
+<script>
+  const float = document.querySelector<HTMLElement>('[data-wa-float]');
+  if (float) {
+    const targets = ['[data-hero-actions]', '#contato', '.footer']
+      .map((sel) => document.querySelector(sel))
+      .filter((el): el is Element => !!el);
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)));
+      float.classList.toggle('is-hidden', visible.size > 0);
+    });
+    targets.forEach((t) => io.observe(t));
+  }
+</script>

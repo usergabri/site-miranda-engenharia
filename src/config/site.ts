@@ -22,6 +22,9 @@ export const site = {
     defaultMessage: 'Olá, Matheus! Vim pelo site e gostaria de um orçamento.',
   },
 
+  /** Prazo de resposta mostrado no contato. `null` = oculto. Confirme antes de publicar. */
+  responseTime: 'Retorno no mesmo dia útil' as string | null,
+
   // Preencher depois ↓ (ex.: 'contato@engmiranda.com.br')
   email: null as string | null,
   /** Ex.: 'https://instagram.com/mirandaengenharia' */

@@ -1,12 +1,11 @@
 ---
 import { Icon } from 'astro-icon/components';
-import { services } from '../../data/content';
+import { Image } from 'astro:assets';
+import { serviceGroups } from '../../data/content';
 import { site, whatsappLink } from '../../config/site';
-
-const options = ['NR-13 (caldeiras, vasos de pressão, tubulações)', ...services.map((s) => s.title), 'Outro'];
+import avatar from '../../assets/img/matheus-avatar.jpg';
 
 const contacts = [
-  { icon: 'tabler:brand-whatsapp', label: 'WhatsApp', value: site.whatsapp.display, href: whatsappLink() },
   site.email && { icon: 'lucide:mail', label: 'E-mail', value: site.email, href: `mailto:${site.email}` },
   site.instagram && {
     icon: 'lucide:instagram',
@@ -14,8 +13,7 @@ const contacts = [
     value: '@' + site.instagram.replace(/\/$/, '').split('/').pop(),
     href: site.instagram,
   },
-  { icon: 'lucide:map-pin', label: 'Sede', value: `${site.city} – ${site.state} · Atendimento em todo o Brasil` },
-  { icon: 'lucide:award', label: 'Responsável técnico', value: `${site.engineer} · CREA ${site.crea}` },
+  { icon: 'lucide:map-pin', label: 'Base', value: `${site.city} – ${site.state} · atendimento em todo o Brasil` },
 ].filter(Boolean) as { icon: string; label: string; value: string; href?: string }[];
 ---
 
@@ -23,30 +21,49 @@ const contacts = [
   <div class="tech-grid" aria-hidden="true"></div>
   <div class="container contact__grid">
     <div class="contact__info">
-      <span class="eyebrow" data-reveal><b>/09</b> Contato</span>
       <h2 class="contact__title display" id="contact-title" data-split>
-        Vamos regularizar <span class="accent">seus equipamentos?</span>
+        Fale direto <span class="accent">comigo.</span>
       </h2>
-      <p class="lead" data-reveal>
-        Conte o que você precisa. A mensagem chega direto no WhatsApp do engenheiro, com retorno rápido e orçamento sem
-        compromisso.
+
+      <div class="engineer">
+        <Image src={avatar} alt="" width={128} height={128} class="engineer__photo" />
+        <div>
+          <p class="engineer__name">{site.engineer}</p>
+          <p class="engineer__role">{site.title} · <span class="mono">CREA {site.crea}</span></p>
+        </div>
+      </div>
+
+      <p class="lead">
+        Sem atendente, sem intermediário. A mensagem chega no meu WhatsApp e quem responde é o engenheiro que vai
+        assinar o seu laudo. Orçamento sem compromisso.
       </p>
+      {
+        site.responseTime && (
+          <p class="contact__sla">
+            <Icon name="lucide:clock" aria-hidden="true" />
+            {site.responseTime}
+          </p>
+        )
+      }
+
+      <a class="btn contact__direct" href={whatsappLink()} target="_blank" rel="noopener">
+        Chamar no WhatsApp · {site.whatsapp.display}
+        <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
+      </a>
 
       <ul class="contact__list">
         {
           contacts.map((c) => (
-            <li data-reveal>
-              <span class="contact__icon">
-                <Icon name={c.icon} />
-              </span>
+            <li>
+              <Icon name={c.icon} aria-hidden="true" />
               <span>
-                <span class="contact__label mono">{c.label}</span>
+                <span class="sr-only">{c.label}: </span>
                 {c.href ? (
                   <a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
                     {c.value}
                   </a>
                 ) : (
-                  <span class="contact__value">{c.value}</span>
+                  c.value
                 )}
               </span>
             </li>
@@ -55,47 +72,88 @@ const contacts = [
       </ul>
     </div>
 
-    <form class="form" data-contact-form data-reveal novalidate>
-      <div class="form__head">
-        <p class="form__title">Solicitar orçamento</p>
-        <p class="form__hint">Ao enviar, o WhatsApp abre com a sua mensagem pronta.</p>
-      </div>
+    <div class="form-wrap">
+      <noscript>
+        <p class="form-noscript">
+          Para pedir um orçamento, <a href={whatsappLink()}>chame no WhatsApp {site.whatsapp.display}</a>.
+        </p>
+      </noscript>
 
-      <div class="form__row">
-        <label class="field">
-          <span>Nome <i aria-hidden="true">*</i></span>
-          <input name="nome" type="text" autocomplete="name" required placeholder="Seu nome" />
-        </label>
-        <label class="field">
-          <span>Empresa</span>
-          <input name="empresa" type="text" autocomplete="organization" placeholder="Nome da empresa" />
-        </label>
-      </div>
-      <div class="form__row">
-        <label class="field">
-          <span>Cidade / UF <i aria-hidden="true">*</i></span>
-          <input name="cidade" type="text" autocomplete="address-level2" required placeholder="Ex.: Maringá – PR" />
-        </label>
-        <label class="field">
-          <span>Serviço <i aria-hidden="true">*</i></span>
-          <select name="servico" required>
-            <option value="" disabled selected>Selecione</option>
-            {options.map((o) => <option value={o}>{o}</option>)}
-          </select>
-        </label>
-      </div>
-      <label class="field">
-        <span>Mensagem</span>
-        <textarea name="mensagem" rows="4" placeholder="Tipo e quantidade de equipamentos, prazo, dúvidas…"></textarea>
-      </label>
+      <form class="form" data-contact-form hidden novalidate>
+        <div class="form__head">
+          <p class="form__title">Prefere deixar tudo escrito?</p>
+          <p class="form__hint">Preencha e o WhatsApp abre com a sua mensagem pronta.</p>
+        </div>
 
-      <p class="form__error" role="alert" data-form-error hidden>Preencha nome, cidade e serviço para continuar.</p>
+        <div class="form__row">
+          <div class="field">
+            <label for="f-nome">Nome <i aria-hidden="true">*</i></label>
+            <input id="f-nome" name="nome" type="text" autocomplete="name" required maxlength="80" aria-describedby="f-nome-err" />
+            <p class="field__err" id="f-nome-err" hidden>Informe o seu nome.</p>
+          </div>
+          <div class="field">
+            <label for="f-empresa">Empresa</label>
+            <input id="f-empresa" name="empresa" type="text" autocomplete="organization" maxlength="80" />
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field">
+            <label for="f-cidade">Cidade / UF <i aria-hidden="true">*</i></label>
+            <input
+              id="f-cidade"
+              name="cidade"
+              type="text"
+              autocomplete="address-level2"
+              required
+              maxlength="60"
+              placeholder="Ex.: Maringá – PR"
+              aria-describedby="f-cidade-err"
+            />
+            <p class="field__err" id="f-cidade-err" hidden>Informe a cidade e o estado.</p>
+          </div>
+          <div class="field">
+            <label for="f-servico">Serviço <i aria-hidden="true">*</i></label>
+            <select id="f-servico" name="servico" required aria-describedby="f-servico-err">
+              <option value="" disabled selected>Selecione</option>
+              <option>NR-13 (caldeiras, vasos de pressão, tubulações)</option>
+              {
+                serviceGroups.map((g) => (
+                  <optgroup label={g.title}>
+                    {g.items.map((s) => (
+                      <option>{s.title}</option>
+                    ))}
+                  </optgroup>
+                ))
+              }
+              <option>Outro</option>
+            </select>
+            <p class="field__err" id="f-servico-err" hidden>Escolha o serviço.</p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-msg">Mensagem</label>
+          <textarea
+            id="f-msg"
+            name="mensagem"
+            rows="4"
+            maxlength="600"
+            placeholder="Tipo e quantidade de equipamentos, prazo, dúvidas…"></textarea>
+        </div>
 
-      <button class="btn form__submit" type="submit">
-        Enviar pelo WhatsApp
-        <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
-      </button>
-    </form>
+        <button class="btn form__submit" type="submit">
+          Enviar pelo WhatsApp
+          <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
+        </button>
+
+        <div class="form__status" role="status" aria-live="polite" data-form-status hidden>
+          <Icon name="lucide:circle-check" aria-hidden="true" />
+          <p>
+            Abrindo o WhatsApp com a sua mensagem. Não abriu?
+            <a href="#" data-form-fallback target="_blank" rel="noopener">Toque aqui para enviar</a>.
+          </p>
+        </div>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -117,56 +175,81 @@ const contacts = [
   }
   .contact__info {
     display: grid;
-    gap: 28px;
+    gap: 26px;
     justify-items: start;
   }
   .contact__title {
-    font-size: clamp(2.6rem, 6vw, 5.4rem);
+    font-size: clamp(2.8rem, 6.4vw, 5.6rem);
+  }
+  .engineer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .engineer :global(.engineer__photo) {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--cyan-500);
+  }
+  .engineer__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+  }
+  .engineer__role {
+    font-size: 0.88rem;
+    color: var(--muted-on-dark);
+  }
+  .contact__sla {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--cyan-300);
+  }
+  .contact__sla :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+  .contact__direct {
+    white-space: normal;
   }
   .contact__list {
     list-style: none;
     padding: 0;
     display: grid;
-    gap: 0;
-    width: 100%;
-    border-top: 1px solid var(--line-dark);
+    gap: 12px;
+    color: var(--muted-on-dark);
+    font-size: 0.95rem;
   }
   .contact__list li {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--line-dark);
+    gap: 12px;
   }
-  .contact__icon {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    background: rgba(0, 184, 217, 0.12);
+  .contact__list :global(svg) {
+    width: 20px;
+    height: 20px;
     color: var(--cyan-500);
-  }
-  .contact__icon :global(svg) {
-    width: 22px;
-    height: 22px;
-  }
-  .contact__label {
-    display: block;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted-on-dark);
-  }
-  .contact__list a,
-  .contact__value {
-    font-weight: 500;
+    flex-shrink: 0;
   }
   .contact__list a:hover {
-    color: var(--cyan-500);
+    color: #fff;
   }
 
+  .form-noscript {
+    padding: 24px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+  }
+  .form-noscript a {
+    color: var(--cyan-700);
+    font-weight: 600;
+    text-decoration: underline;
+  }
   .form {
     display: grid;
     gap: 16px;
@@ -176,12 +259,15 @@ const contacts = [
     color: var(--text);
     box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.6);
   }
+  .form[hidden] {
+    display: none;
+  }
   .form__head {
     margin-bottom: 8px;
   }
   .form__title {
     font-family: var(--font-display);
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: -0.025em;
   }
@@ -202,8 +288,9 @@ const contacts = [
     display: grid;
     gap: 7px;
     min-width: 0;
+    align-content: start;
   }
-  .field > span {
+  .field > label {
     font-size: 0.85rem;
     font-weight: 600;
   }
@@ -215,7 +302,8 @@ const contacts = [
   .field select,
   .field textarea {
     width: 100%;
-    padding: 13px 16px;
+    min-height: 48px;
+    padding: 12px 16px;
     border-radius: 12px;
     border: 1px solid var(--line);
     background: var(--paper);
@@ -240,22 +328,58 @@ const contacts = [
   .field select:focus,
   .field textarea:focus {
     outline: none;
-    border-color: var(--cyan-500);
+    border-color: var(--cyan-600);
     background: var(--surface);
-    box-shadow: 0 0 0 4px rgba(0, 184, 217, 0.16);
+    box-shadow: 0 0 0 4px rgba(0, 184, 217, 0.18);
   }
   .field [aria-invalid='true'] {
-    border-color: #d14343;
+    border-color: #b42318;
+    background: #fff7f6;
   }
-  .form__error {
+  .field__err {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     color: #b42318;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
+  }
+  .field__err[hidden] {
+    display: none;
   }
   .form__submit {
     justify-content: space-between;
     width: 100%;
     margin-top: 8px;
+  }
+  .form__submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .form__status {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--cyan-50);
+    color: #0b3c46;
+    font-size: 0.93rem;
+  }
+  .form__status[hidden] {
+    display: none;
+  }
+  .form__status :global(svg) {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--cyan-700);
+  }
+  .form__status a {
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 </style>
 
@@ -264,22 +388,31 @@ const contacts = [
 
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
   if (form) {
-    const error = form.querySelector<HTMLElement>('[data-form-error]')!;
+    // Sem JS o formulário fica oculto (o <noscript> oferece o link direto), então nenhum dado vai para a URL
+    form.hidden = false;
+
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const fallback = form.querySelector<HTMLAnchorElement>('[data-form-fallback]')!;
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const required = ['nome', 'cidade', 'servico'];
+
+    const setError = (name: string, invalid: boolean) => {
+      const el = form.elements.namedItem(name) as HTMLInputElement;
+      el.setAttribute('aria-invalid', String(invalid));
+      const err = document.getElementById(`${el.id}-err`);
+      if (err) err.hidden = !invalid;
+    };
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (submit.disabled) return;
       const data = new FormData(form);
       const get = (k: string) => String(data.get(k) ?? '').trim();
-      const required = ['nome', 'cidade', 'servico'];
-      let valid = true;
-      required.forEach((name) => {
-        const el = form.elements.namedItem(name) as HTMLInputElement;
-        const ok = !!get(name);
-        el.setAttribute('aria-invalid', String(!ok));
-        if (!ok) valid = false;
-      });
-      error.hidden = valid;
-      if (!valid) {
-        (form.querySelector('[aria-invalid="true"]') as HTMLElement | null)?.focus();
+
+      const invalid = required.filter((name) => !get(name));
+      required.forEach((name) => setError(name, invalid.includes(name)));
+      if (invalid.length) {
+        (form.elements.namedItem(invalid[0]) as HTMLElement).focus();
         return;
       }
 
@@ -291,14 +424,21 @@ const contacts = [
         get('mensagem') && `*Mensagem:* ${get('mensagem')}`,
       ].filter(Boolean);
       const lines = ['Olá, Matheus! Vim pelo site e gostaria de um orçamento.', '', ...fields];
-
       const url = `https://wa.me/${site.whatsapp.number}?text=${encodeURIComponent(lines.join('\n'))}`;
-      window.open(url, '_blank', 'noopener');
+
+      // Evita abrir várias abas com clique duplo
+      submit.disabled = true;
+      setTimeout(() => (submit.disabled = false), 3000);
+
+      fallback.href = url;
+      status.hidden = false;
+      const win = window.open(url, '_blank');
+      if (win) win.opener = null;
     });
 
     form.addEventListener('input', (e) => {
-      const el = e.target as HTMLElement;
-      if (el.getAttribute('aria-invalid') === 'true') el.setAttribute('aria-invalid', 'false');
+      const el = e.target as HTMLInputElement;
+      if (el.getAttribute('aria-invalid') === 'true' && el.value.trim()) setError(el.name, false);
     });
   }
 </script>

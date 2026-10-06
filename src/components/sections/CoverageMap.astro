@@ -49,19 +49,18 @@ const routes = site.statesServed
 const servedNames = paths.filter((p) => served.has(p.id)).sort((a, b) => site.statesServed.indexOf(a.id as never) - site.statesServed.indexOf(b.id as never));
 ---
 
-<section class="coverage section dark" aria-labelledby="coverage-title">
+<section class="coverage section dark" id="atendimento" aria-labelledby="coverage-title">
   <div class="container coverage__grid">
     <div class="coverage__content">
-      <span class="eyebrow" data-reveal><b>/06</b> Área de atuação</span>
       <h2 class="h2" id="coverage-title" data-split>
         Base no Paraná. <span class="accent">Atendimento em todo o Brasil.</span>
       </h2>
-      <p class="lead" data-reveal>
-        A sede fica em {site.city} – {site.state}, e a equipe se desloca até a sua planta onde ela estiver. Projetos já
-        executados em {served.size} estados e mais de 10 cidades.
+      <p class="lead">
+        Minha base é {site.city} – {site.state}, e eu vou até a sua planta onde ela estiver. Já atendi em {served.size}
+        estados e mais de 10 cidades.
       </p>
 
-      <ul class="coverage__states" data-reveal>
+      <ul class="coverage__states">
         {
           servedNames.map((s) => (
             <li>
@@ -73,7 +72,7 @@ const servedNames = paths.filter((p) => served.has(p.id)).sort((a, b) => site.st
         }
       </ul>
 
-      <p class="coverage__hq mono" data-reveal>
+      <p class="coverage__hq mono">
         <Icon name="lucide:map-pin" />
         {site.city} – {site.state} · {site.geo.lat.toFixed(2)}°, {site.geo.lon.toFixed(2)}°
       </p>

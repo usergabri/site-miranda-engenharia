@@ -1,0 +1,272 @@
+---
+import { Icon } from 'astro-icon/components';
+import type { Case } from '../data/content';
+
+interface Props {
+  c: Case;
+  lead?: boolean;
+}
+const { c, lead = false } = Astro.props;
+const t = c.testimonial;
+const initials = t.name
+  .split(' ')
+  .filter((_, i, a) => i === 0 || i === a.length - 1)
+  .map((n) => n[0])
+  .join('');
+const dialogId = `dep-${c.id}`;
+---
+
+<div class:list={['cb', { 'cb--lead': lead }]}>
+  <div class="cb__metric">
+    <span class:list={['cb__number', { 'cb__number--word': !/^\+?[\d.]+$/.test(c.metric) }]}>{c.metric}</span>
+    <span class="cb__unit">{c.unit}</span>
+  </div>
+
+  <dl class="cb__fields">
+    <div>
+      <dt>Cliente</dt>
+      <dd id={`case-${c.id}`}>{c.title}</dd>
+    </div>
+    <div>
+      <dt>Local</dt>
+      <dd>{c.place}</dd>
+    </div>
+    <div class="cb__scope">
+      <dt>Serviço</dt>
+      <dd>{c.scope}</dd>
+    </div>
+  </dl>
+  {c.via && <p class="cb__via">{c.via}</p>}
+
+  <figure class="cb__quote">
+    <blockquote>
+      <p>“{t.quote}”</p>
+    </blockquote>
+    <figcaption class="person">
+      <span class="person__avatar" aria-hidden="true">{initials}</span>
+      <span>
+        <span class="person__name">{t.name}</span>
+        <span class="person__role">{t.role} · {t.company}</span>
+      </span>
+    </figcaption>
+    <button class="cb__more" type="button" data-dialog-open={dialogId}>
+      Ler depoimento completo <Icon name="lucide:arrow-up-right" aria-hidden="true" />
+    </button>
+  </figure>
+
+  <dialog class="tdialog" id={dialogId} aria-labelledby={`${dialogId}-title`} data-lenis-prevent>
+    <div class="tdialog__inner">
+      <button class="tdialog__close" type="button" data-dialog-close aria-label="Fechar depoimento">
+        <Icon name="lucide:x" />
+      </button>
+      <div class="person">
+        <span class="person__avatar" aria-hidden="true">{initials}</span>
+        <span>
+          <span class="person__name" id={`${dialogId}-title`}>{t.name}</span>
+          <span class="person__role">{t.role} · {t.company}</span>
+          <span class="person__place">{c.place}</span>
+        </span>
+      </div>
+      <blockquote class="tdialog__text">
+        {t.full.map((p) => <p>{p}</p>)}
+      </blockquote>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  .cb {
+    display: grid;
+    gap: 22px;
+    align-content: start;
+  }
+  .cb__metric {
+    display: grid;
+    gap: 4px;
+  }
+  .cb__number {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.8rem, 5vw, 3.8rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--cyan-500);
+  }
+  .cb--lead .cb__number {
+    font-size: clamp(4rem, 9vw, 7rem);
+  }
+  .cb__number--word {
+    font-size: clamp(2.2rem, 4vw, 3rem);
+  }
+  .cb__unit {
+    font-size: 0.95rem;
+    color: var(--muted-on-dark);
+  }
+  .cb__fields {
+    display: grid;
+    margin: 0;
+    border-top: 1px solid var(--line-dark);
+  }
+  .cb__fields > div {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .cb__fields dt {
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-on-dark);
+    padding-top: 2px;
+  }
+  .cb__fields dd {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .cb__fields > div:first-child dd {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  .cb__via {
+    font-size: 0.85rem;
+    color: var(--muted-on-dark);
+    margin-top: -10px;
+  }
+  .cb__quote {
+    display: grid;
+    gap: 16px;
+    margin: 4px 0 0;
+  }
+  .cb__quote blockquote p {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    font-weight: 500;
+    text-wrap: pretty;
+  }
+  .cb--lead .cb__quote blockquote p {
+    font-size: clamp(1.25rem, 1.9vw, 1.6rem);
+  }
+  .person {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .person > span:last-child {
+    display: grid;
+  }
+  .person__avatar {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--cyan-500);
+    color: var(--ink-950);
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+  .person__name {
+    font-weight: 600;
+  }
+  .person__role,
+  .person__place {
+    font-size: 0.88rem;
+    color: var(--muted-on-dark);
+  }
+  .cb__more {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--cyan-300);
+    cursor: pointer;
+  }
+  .cb__more :global(svg) {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .cb__more:hover :global(svg) {
+    transform: translate(3px, -3px);
+  }
+
+  .tdialog {
+    width: min(720px, calc(100vw - 32px));
+    max-height: min(86vh, 860px);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 40px 80px -20px rgba(5, 18, 22, 0.5);
+  }
+  .tdialog::backdrop {
+    background: rgba(5, 18, 22, 0.72);
+  }
+  .tdialog[open] {
+    animation: dialog-in 0.45s var(--ease-out);
+  }
+  .tdialog__inner {
+    position: relative;
+    padding: clamp(24px, 4vw, 48px);
+    display: grid;
+    gap: 24px;
+  }
+  .tdialog .person {
+    padding-right: 52px;
+  }
+  .tdialog .person__avatar {
+    background: var(--ink-950);
+    color: var(--cyan-500);
+  }
+  .tdialog .person__role,
+  .tdialog .person__place {
+    color: var(--muted);
+  }
+  .tdialog__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    cursor: pointer;
+  }
+  .tdialog__close :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+  .tdialog__text {
+    display: grid;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: #33454a;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.98);
+    }
+  }
+</style>

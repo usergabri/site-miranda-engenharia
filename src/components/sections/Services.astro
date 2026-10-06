@@ -1,54 +1,52 @@
 ---
 import { Icon } from 'astro-icon/components';
-import { services } from '../../data/content';
+import { serviceGroups } from '../../data/content';
 import { serviceMessage, whatsappLink } from '../../config/site';
 ---
 
 <section class="services section" id="servicos" aria-labelledby="services-title">
   <div class="container">
     <div class="section-head section-head--split">
-      <div class="services__titles">
-        <span class="eyebrow" data-reveal><b>/02</b> Serviços complementares</span>
-        <h2 class="h2" id="services-title" data-split>
-          Engenharia mecânica completa para manter sua operação <span class="accent">regular e</span> <span class="nowrap"><span class="accent">segura</span>.</span>
-        </h2>
-      </div>
-      <p class="lead" data-reveal>
-        Além da NR-13, atendemos as principais exigências técnicas e legais de indústrias, empresas e prestadores de
-        serviço, sempre com ART e documentação completa.
+      <h2 class="h2" id="services-title" data-split>
+        Além da NR-13, o que mais a sua operação precisa
+      </h2>
+      <p class="lead">
+        Exigências técnicas e legais de indústrias, empresas e prestadores de serviço, sempre com ART e documentação
+        completa. Toque em um serviço para pedir o orçamento direto no WhatsApp.
       </p>
     </div>
 
-    <ul class="services__grid">
+    <div class="groups">
       {
-        services.map((s, i) => (
-          <li class="card" data-reveal style={`--d:${i % 3}`}>
-            <div class="card__top">
-              <span class="card__icon">
-                <Icon name={s.icon} />
-              </span>
-              <span class="card__n mono">{String(i + 1).padStart(2, '0')}</span>
+        serviceGroups.map((group) => (
+          <section class="group" data-reveal aria-label={group.title}>
+            <div class="group__head">
+              <h3 class="group__title">{group.title}</h3>
+              <p class="group__text">{group.text}</p>
             </div>
-            <h3 class="h3">{s.title}</h3>
-            <p class="card__text">{s.text}</p>
-            <a class="link-arrow card__link" href={whatsappLink(serviceMessage(s.title))} target="_blank" rel="noopener">
-              Solicitar orçamento <Icon name="lucide:arrow-up-right" />
-              <span class="sr-only"> de {s.title}</span>
-            </a>
-          </li>
+            <ul class="group__list">
+              {group.items.map((s) => (
+                <li>
+                  <a class="svc" href={whatsappLink(serviceMessage(s.title))} target="_blank" rel="noopener">
+                    <span class="svc__icon" aria-hidden="true">
+                      <Icon name={s.icon} />
+                    </span>
+                    <span class="svc__body">
+                      <span class="svc__title">{s.title}</span>
+                      <span class="svc__text">{s.text}</span>
+                    </span>
+                    <span class="svc__cta">
+                      <span class="svc__cta-label">Pedir orçamento</span>
+                      <Icon name="lucide:arrow-up-right" aria-hidden="true" />
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
         ))
       }
-      <li class="card card--cta" data-reveal>
-        <p class="card--cta__title">Não encontrou o que precisa?</p>
-        <p class="card--cta__text">
-          Conte qual é o equipamento ou a exigência. Indicamos o caminho técnico e legal para resolver.
-        </p>
-        <a class="btn btn--dark" href={whatsappLink()} target="_blank" rel="noopener">
-          Falar com o engenheiro
-          <span class="btn__dot"><Icon name="tabler:brand-whatsapp" /></span>
-        </a>
-      </li>
-    </ul>
+    </div>
   </div>
 </section>
 
@@ -56,124 +54,118 @@ import { serviceMessage, whatsappLink } from '../../config/site';
   .services {
     background: var(--surface);
   }
-  .services__titles {
-    display: grid;
-    gap: 24px;
-    justify-items: start;
+  .groups {
+    border-top: 2px solid var(--text);
   }
-  .services__grid {
-    list-style: none;
-    padding: 0;
+  .group {
     display: grid;
-    gap: 14px;
-    grid-template-columns: 1fr;
+    gap: 16px 48px;
+    padding-block: clamp(24px, 3vw, 36px);
+    border-bottom: 1px solid var(--line);
   }
-  @media (min-width: 680px) {
-    .services__grid {
-      grid-template-columns: repeat(2, 1fr);
+  @media (min-width: 960px) {
+    .group {
+      grid-template-columns: 0.75fr 1.25fr;
     }
   }
-  @media (min-width: 1080px) {
-    .services__grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  .card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: clamp(22px, 2.4vw, 30px);
-    border-radius: var(--radius);
-    background: var(--paper);
-    border: 1px solid transparent;
-    transition:
-      background 0.4s var(--ease-out),
-      border-color 0.4s var(--ease-out),
-      box-shadow 0.4s var(--ease-out),
-      transform 0.4s var(--ease-out);
-  }
-  .card:hover {
-    background: var(--surface);
-    border-color: var(--line);
-    box-shadow: var(--shadow-lift);
-    transform: translateY(-4px);
-  }
-  .card__top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 18px;
-  }
-  .card__icon {
+  .group__head {
     display: grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 15px;
-    background: var(--surface);
-    color: var(--cyan-600);
-    border: 1px solid var(--line);
-    transition:
-      background 0.4s var(--ease-out),
-      color 0.4s var(--ease-out),
-      border-color 0.4s var(--ease-out);
+    gap: 8px;
+    align-content: start;
   }
-  .card:hover .card__icon {
-    background: var(--cyan-500);
-    border-color: var(--cyan-500);
-    color: var(--ink-950);
+  .group__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.35rem, 2vw, 1.6rem);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
-  .card__icon :global(svg) {
-    width: 26px;
-    height: 26px;
-  }
-  .card__n {
-    font-size: 0.75rem;
-    color: #a9b7ba;
-  }
-  .card__text {
+  .group__text {
     color: var(--muted);
     font-size: 0.95rem;
-    text-wrap: pretty;
+    max-width: 42ch;
   }
-  .card__link {
-    margin-top: auto;
-    padding-top: 14px;
+  .group__list {
+    list-style: none;
+    padding: 0;
   }
-
-  .card--cta {
-    justify-content: center;
-    gap: 14px;
-    background:
-      radial-gradient(120% 120% at 100% 0%, rgba(0, 184, 217, 0.35), transparent 60%),
-      var(--cyan-50);
-    border-color: var(--cyan-100);
+  .group__list li + li {
+    border-top: 1px solid var(--line);
   }
-  .card--cta:hover {
-    background:
-      radial-gradient(120% 120% at 100% 0%, rgba(0, 184, 217, 0.45), transparent 60%),
-      var(--cyan-50);
-    border-color: var(--cyan-300);
+  .svc {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 12px;
+    margin-inline: -12px;
+    border-radius: 12px;
+    transition: background 0.3s var(--ease-out);
   }
-  .card--cta .btn {
-    align-self: flex-start;
-    margin-top: 8px;
+  .svc:hover,
+  .svc:focus-visible {
+    background: var(--cyan-50);
   }
-  .card--cta__title {
+  .svc__icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--cyan-700);
+    transition:
+      background 0.3s var(--ease-out),
+      color 0.3s var(--ease-out);
+  }
+  .svc:hover .svc__icon {
+    background: var(--cyan-500);
+    color: var(--ink-950);
+  }
+  .svc__icon :global(svg) {
+    width: 22px;
+    height: 22px;
+  }
+  .svc__body {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .svc__title {
     font-family: var(--font-display);
-    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
-    font-weight: 500;
-    letter-spacing: -0.025em;
-    line-height: 1.1;
+    font-weight: 600;
+    font-size: 1.08rem;
+    letter-spacing: -0.01em;
   }
-  .card--cta__text {
+  .svc__text {
     color: var(--muted);
-    max-width: 44ch;
+    font-size: 0.92rem;
+    line-height: 1.45;
   }
-  @media (min-width: 680px) {
-    .card--cta {
-      grid-column: span 2;
+  .svc__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cyan-700);
+    white-space: nowrap;
+  }
+  .svc__cta :global(svg) {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .svc:hover .svc__cta :global(svg) {
+    transform: translate(2px, -2px);
+  }
+  @media (max-width: 640px) {
+    .svc__cta-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
     }
   }
 </style>

@@ -1,115 +1,66 @@
 ---
 import { Icon } from 'astro-icon/components';
-import { Image, getImage } from 'astro:assets';
-import { site } from '../../config/site';
-import photo from '../../assets/img/matheus-medicao-espessura.png';
+import { getImage } from 'astro:assets';
 import valve from '../../assets/img/matheus-valvula-seguranca.jpeg';
 
 const videoPoster = await getImage({ src: valve, width: 1024, format: 'webp' });
 
 const timeline = [
-  { year: '2019', title: 'Engenharia Mecânica', text: 'Formado pela Uningá, em Maringá – PR.' },
-  { year: 'Fábrica', title: 'Anos no chão de fábrica', text: 'Experiência prática com manutenção, operação e os equipamentos reais da indústria.' },
-  { year: 'NR-13', title: 'Especialização', text: 'Especialização em inspeção de caldeiras, vasos de pressão e tubulações.' },
+  { year: '2019', title: 'Engenharia Mecânica', text: 'Me formei pela Uningá, em Maringá – PR.' },
+  { year: 'Fábrica', title: 'Anos no chão de fábrica', text: 'Manutenção, operação e os equipamentos reais da indústria, no dia a dia.' },
+  { year: 'NR-13', title: 'Especialização', text: 'Inspeção de caldeiras, vasos de pressão e tubulações.' },
   { year: 'Hoje', title: 'Miranda Engenharia', text: 'Há 2 anos atendendo indústrias em todo o Brasil.' },
-];
-
-const values = [
-  { icon: 'lucide:list-checks', title: 'Organização', text: 'Documentação estruturada e fácil de acompanhar.' },
-  { icon: 'lucide:calendar-check', title: 'Prazo cumprido', text: 'Horários e cronograma respeitados.' },
-  { icon: 'lucide:shield-check', title: 'Até o fim', text: 'Acompanhamento das pendências até a solução.' },
 ];
 ---
 
 <section class="about section" id="sobre" aria-labelledby="about-title">
-  <div class="container">
-    <div class="about__grid">
-      <figure class="about__photo" data-reveal>
-        <div class="about__img">
-          <Image
-            src={photo}
-            alt="Engenheiro Matheus Miranda medindo a espessura de um vaso de pressão com aparelho de ultrassom"
-            widths={[480, 720, 960, 1200]}
-            sizes="(min-width: 1000px) 44vw, 100vw"
-            data-parallax
-          />
-        </div>
-        <figcaption class="about__badge">
-          <span class="about__badge-icon"><Icon name="lucide:award" /></span>
-          <span>
-            <strong>{site.engineer}</strong>
-            <span class="mono">{site.title} · CREA {site.crea}</span>
-          </span>
-        </figcaption>
-      </figure>
-
-      <div class="about__content">
-        <span class="eyebrow" data-reveal><b>/03</b> Quem assina</span>
-        <h2 class="h2" id="about-title" data-split>
-          Do chão de fábrica à engenharia <span class="accent">que</span> <span class="nowrap"><span class="accent">resolve</span>.</span>
-        </h2>
-        <div class="about__text" data-reveal>
-          <p>
-            Por trás de cada laudo da Miranda Engenharia está o engenheiro {site.engineer}. Antes de assinar relatórios, ele
-            passou anos no chão de fábrica, convivendo com os equipamentos, as rotinas de manutenção e as pressões reais de
-            uma operação industrial.
-          </p>
-          <p>
-            Essa vivência virou método: entender o equipamento, medir em campo, documentar com rigor e acompanhar cada
-            pendência até a regularização. Sem laudo de gaveta, sem deixar o cliente sozinho com a norma.
-          </p>
-        </div>
-
-        <ol class="timeline">
-          {
-            timeline.map((t, i) => (
-              <li class="timeline__item" data-reveal style={`--d:${i}`}>
-                <span class="timeline__year mono">{t.year}</span>
-                <div>
-                  <h3 class="timeline__title">{t.title}</h3>
-                  <p class="timeline__text">{t.text}</p>
-                </div>
-              </li>
-            ))
-          }
-        </ol>
-      </div>
-    </div>
-
-    <div class="about__field">
-      <div class="about__video" data-reveal>
-        <video
-          src="/videos/sobre.mp4"
-          poster={videoPoster.src}
-          muted
-          loop
-          playsinline
-          preload="none"
-          aria-label="Vídeo do engenheiro Matheus Miranda em serviço de campo"
-          data-autoplay-visible></video>
-        <button class="about__play" type="button" data-video-toggle aria-label="Pausar vídeo">
-          <Icon name="lucide:pause" class="i-pause" />
-          <Icon name="lucide:play" class="i-play" />
-        </button>
-        <span class="about__video-tag mono">Em campo · Inspeção NR-13</span>
+  <div class="container about__grid">
+    <div class="about__content">
+      <h2 class="h2" id="about-title" data-split>
+        Eu conheço o chão de fábrica <span class="accent nowrap">por dentro.</span>
+      </h2>
+      <div class="about__text">
+        <p>
+          Antes de abrir a Miranda Engenharia, passei anos na manutenção e na operação industrial, convivendo com os
+          equipamentos e com a pressão de manter uma planta rodando. Sei o que uma parada não programada custa.
+        </p>
+        <p>
+          Por isso o meu laudo não fica na gaveta: entendo o equipamento, meço em campo, documento com rigor e acompanho
+          cada pendência até a regularização, sem deixar você sozinho com a norma.
+        </p>
       </div>
 
-      <ul class="values">
+      <ol class="timeline">
         {
-          values.map((v, i) => (
-            <li class="value" data-reveal style={`--d:${i}`}>
-              <span class="value__icon">
-                <Icon name={v.icon} />
-              </span>
+          timeline.map((t) => (
+            <li class="timeline__item">
+              <span class="timeline__year">{t.year}</span>
               <div>
-                <h3 class="h3">{v.title}</h3>
-                <p>{v.text}</p>
+                <h3 class="timeline__title">{t.title}</h3>
+                <p class="timeline__text">{t.text}</p>
               </div>
             </li>
           ))
         }
-      </ul>
+      </ol>
     </div>
+
+    <figure class="about__video" data-reveal>
+      <video
+        src="/videos/sobre.mp4"
+        poster={videoPoster.src}
+        muted
+        loop
+        playsinline
+        preload="none"
+        aria-label="Vídeo do engenheiro Matheus Miranda em serviço de campo"
+        data-autoplay-visible></video>
+      <button class="about__play" type="button" data-video-toggle aria-label="Reproduzir vídeo">
+        <Icon name="lucide:pause" class="i-pause" />
+        <Icon name="lucide:play" class="i-play" />
+      </button>
+      <figcaption>Em campo: inspeção de vasos de pressão.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -119,86 +70,32 @@ const values = [
   }
   .about__grid {
     display: grid;
-    gap: clamp(40px, 6vw, 88px);
-    align-items: center;
+    gap: clamp(40px, 6vw, 80px);
+    align-items: start;
   }
   @media (min-width: 1000px) {
     .about__grid {
-      grid-template-columns: 0.95fr 1.05fr;
+      grid-template-columns: 1.05fr 0.95fr;
     }
-  }
-  .about__photo {
-    position: relative;
-  }
-  .about__img {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    aspect-ratio: 1 / 1.08;
-    background: var(--line);
-  }
-  .about__img :global(img) {
-    width: 100%;
-    height: 116%;
-    object-fit: cover;
-    object-position: 60% 30%;
-  }
-  .about__badge {
-    position: absolute;
-    left: clamp(12px, 2vw, 24px);
-    bottom: clamp(12px, 2vw, 24px);
-    right: clamp(12px, 2vw, 24px);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 18px 14px 14px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-card);
-    max-width: 380px;
-  }
-  .about__badge strong {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    letter-spacing: -0.01em;
-  }
-  .about__badge .mono {
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
-  .about__badge-icon {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--ink-950);
-    color: var(--cyan-500);
-    flex-shrink: 0;
-  }
-  .about__badge-icon :global(svg) {
-    width: 22px;
-    height: 22px;
+    .about__video {
+      position: sticky;
+      top: 120px;
+    }
   }
   .about__content {
     display: grid;
     gap: 28px;
-    justify-items: start;
   }
   .about__text {
     display: grid;
     gap: 16px;
     color: var(--muted);
     font-size: 1.05rem;
-    max-width: 60ch;
+    max-width: 62ch;
   }
   .timeline {
     list-style: none;
     padding: 0;
-    display: grid;
-    gap: 0;
     width: 100%;
     border-top: 1px solid var(--line);
   }
@@ -210,12 +107,11 @@ const values = [
     border-bottom: 1px solid var(--line);
   }
   .timeline__year {
-    font-size: 0.78rem;
-    font-weight: 500;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
     color: var(--cyan-700);
-    padding-top: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    padding-top: 1px;
   }
   .timeline__title {
     font-family: var(--font-display);
@@ -228,46 +124,25 @@ const values = [
     font-size: 0.93rem;
   }
 
-  .about__field {
-    margin-top: clamp(56px, 8vw, 112px);
-    display: grid;
-    gap: 16px;
-  }
-  @media (min-width: 1000px) {
-    .about__field {
-      grid-template-columns: 1.6fr 1fr;
-    }
-  }
   .about__video {
     position: relative;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background: var(--ink-900);
   }
   .about__video video {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 11;
     object-fit: cover;
+    border-radius: var(--radius-lg);
+    background: var(--ink-900);
   }
-  .about__video-tag {
-    position: absolute;
-    left: 16px;
-    top: 16px;
-    padding: 7px 12px;
-    border-radius: 999px;
-    background: rgba(5, 18, 22, 0.65);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: #fff;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .about__video figcaption {
+    margin-top: 12px;
+    font-size: 0.88rem;
+    color: var(--muted);
   }
   .about__play {
     position: absolute;
     right: 16px;
-    bottom: 16px;
+    top: 16px;
     display: grid;
     place-items: center;
     width: 48px;
@@ -275,8 +150,6 @@ const values = [
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.25);
     background: rgba(5, 18, 22, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     color: #fff;
     cursor: pointer;
   }
@@ -290,40 +163,5 @@ const values = [
   }
   .about__play.is-paused :global(.i-play) {
     display: block;
-  }
-  .values {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: 12px;
-  }
-  .value {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    padding: 22px;
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    height: 100%;
-  }
-  .value p {
-    color: var(--muted);
-    font-size: 0.93rem;
-    margin-top: 4px;
-  }
-  .value__icon {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--cyan-50);
-    color: var(--cyan-700);
-    flex-shrink: 0;
-  }
-  .value__icon :global(svg) {
-    width: 22px;
-    height: 22px;
   }
 </style>

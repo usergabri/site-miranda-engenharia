@@ -7,10 +7,9 @@ import { whatsappLink } from '../../config/site';
 <section class="faq section" id="faq" aria-labelledby="faq-title">
   <div class="container faq__grid">
     <div class="faq__head">
-      <span class="eyebrow" data-reveal><b>/08</b> Perguntas frequentes</span>
       <h2 class="h2" id="faq-title" data-split>Dúvidas sobre laudos, ART e <span class="accent">NR-13</span></h2>
-      <p class="lead" data-reveal>Não encontrou a sua? Pergunte direto ao engenheiro.</p>
-      <a class="btn btn--dark" href={whatsappLink('Olá, Matheus! Vim pelo site e tenho uma dúvida:')} target="_blank" rel="noopener" data-reveal>
+      <p class="lead">Não encontrou a sua? Me pergunte direto.</p>
+      <a class="btn btn--dark" href={whatsappLink('Olá, Matheus! Vim pelo site e tenho uma dúvida:')} target="_blank" rel="noopener">
         Enviar minha dúvida
         <span class="btn__dot"><Icon name="lucide:message-circle" /></span>
       </a>
@@ -19,9 +18,8 @@ import { whatsappLink } from '../../config/site';
     <div class="faq__list">
       {
         faq.map((f, i) => (
-          <details class="qa" data-reveal name="faq" open={i === 0}>
+          <details class="qa" name="faq" open={i === 0}>
             <summary>
-              <span class="qa__n mono">{String(i + 1).padStart(2, '0')}</span>
               <span class="qa__q">{f.q}</span>
               <span class="qa__icon" aria-hidden="true">
                 <Icon name="lucide:plus" />
@@ -69,7 +67,7 @@ import { whatsappLink } from '../../config/site';
   }
   .qa summary {
     display: grid;
-    grid-template-columns: 40px 1fr 40px;
+    grid-template-columns: 1fr 44px;
     gap: 12px;
     align-items: center;
     padding: 22px 0;
@@ -78,10 +76,6 @@ import { whatsappLink } from '../../config/site';
   }
   .qa summary::-webkit-details-marker {
     display: none;
-  }
-  .qa__n {
-    font-size: 0.78rem;
-    color: var(--cyan-700);
   }
   .qa__q {
     font-family: var(--font-display);
@@ -93,8 +87,8 @@ import { whatsappLink } from '../../config/site';
   .qa__icon {
     display: grid;
     place-items: center;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 1px solid var(--line);
     transition:
@@ -119,17 +113,9 @@ import { whatsappLink } from '../../config/site';
     border-color: var(--cyan-500);
   }
   .qa__a {
-    padding: 0 52px 26px;
+    padding: 0 56px 26px 0;
     color: var(--muted);
     max-width: 70ch;
-  }
-  @media (max-width: 560px) {
-    .qa summary {
-      grid-template-columns: 30px 1fr 40px;
-    }
-    .qa__a {
-      padding: 0 0 22px 42px;
-    }
   }
   .qa[open] .qa__a {
     animation: qa-in 0.45s var(--ease-out);
